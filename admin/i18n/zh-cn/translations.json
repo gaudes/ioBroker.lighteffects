@@ -1,0 +1,17 @@
+{
+    "SActive": "积极的",
+    "SName": "姓名",
+    "SState": "状态",
+    "STabLights": "灯",
+    "lighteffects adapter settings": "lighteffects的适配器设置",
+    "STabEffects": "效果设置",
+    "SBrightness": "亮度",
+    "SColor": "颜色",
+    "STransition": "过渡时间",
+    "SDisabling": "停用行为",
+    "SEffect": "影响",
+    "SDisablingPowerOff": "关机",
+    "SDisablingPowerOffReset": "断电复位",
+    "SEffectCandle": "蜡烛",
+    "SEffectColor": "丰富多彩的"
+}

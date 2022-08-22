@@ -1,0 +1,17 @@
+{
+    "SActive": "Aktiv",
+    "SName": "Name",
+    "SState": "Bundesland",
+    "STabLights": "Beleuchtung",
+    "lighteffects adapter settings": "Adaptereinstellungen für lighteffects",
+    "STabEffects": "Effekteinstellungen",
+    "SBrightness": "Helligkeit",
+    "SColor": "Farbe",
+    "STransition": "Übergangszeit",
+    "SDisabling": "Deaktivierungsverhalten",
+    "SEffect": "Wirkung",
+    "SDisablingPowerOff": "Ausschalten",
+    "SDisablingPowerOffReset": "Ausschalten mit Reset",
+    "SEffectCandle": "Kerze",
+    "SEffectColor": "Bunt"
+}

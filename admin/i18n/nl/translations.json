@@ -1,0 +1,17 @@
+{
+    "SActive": "Actief",
+    "SName": "Naam",
+    "SState": "Staat",
+    "STabLights": "Lichten",
+    "lighteffects adapter settings": "Adapterinstellingen voor lighteffects",
+    "STabEffects": "Effectinstellingen",
+    "SBrightness": "Helderheid",
+    "SColor": "Kleur",
+    "STransition": "Overgangstijd",
+    "SDisabling": "Deactiveringsgedrag",
+    "SEffect": "Effect",
+    "SDisablingPowerOff": "Uitschakelen",
+    "SDisablingPowerOffReset": "Uitschakelen met reset",
+    "SEffectCandle": "Kaars",
+    "SEffectColor": "Kleurrijk"
+}

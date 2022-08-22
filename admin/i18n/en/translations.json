@@ -1,0 +1,17 @@
+{
+	"SActive": "Active",
+	"SBrightness": "Brightness",
+	"SColor": "Color",
+	"SDisabling": "Deactivation Behaviour",
+	"SDisablingPowerOff": "Power off",
+	"SDisablingPowerOffReset": "Power off with reset",
+	"SEffect": "Effect",
+	"SEffectCandle": "Candle",
+	"SEffectColor": "Colorful",
+	"SName": "Name",
+	"STransition": "Transition Time",
+	"SState": "State",
+	"STabEffects": "Effect Settings",
+	"STabLights": "Lights",
+	"lighteffects adapter settings": "Adapter settings for lighteffects"
+}

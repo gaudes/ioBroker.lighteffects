@@ -1,0 +1,17 @@
+{
+    "SActive": "Actif",
+    "SName": "Nom",
+    "SState": "État",
+    "STabLights": "Lumières",
+    "lighteffects adapter settings": "Paramètres d'adaptateur pour lighteffects",
+    "STabEffects": "Paramètres d'effet",
+    "SBrightness": "Luminosité",
+    "SColor": "Couleur",
+    "STransition": "Temps de transition",
+    "SDisabling": "Comportement de désactivation",
+    "SEffect": "Effet",
+    "SDisablingPowerOff": "Éteindre",
+    "SDisablingPowerOffReset": "Mise hors tension avec réinitialisation",
+    "SEffectCandle": "Bougie",
+    "SEffectColor": "Coloré"
+}

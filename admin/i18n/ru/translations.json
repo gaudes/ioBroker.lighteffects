@@ -1,0 +1,17 @@
+{
+    "SActive": "Активный",
+    "SName": "Имя",
+    "SState": "Состояние",
+    "STabLights": "Огни",
+    "lighteffects adapter settings": "Настройки адаптера для lighteffects",
+    "STabEffects": "Настройки эффектов",
+    "SBrightness": "Яркость",
+    "SColor": "Цвет",
+    "STransition": "Время перехода",
+    "SDisabling": "Поведение при деактивации",
+    "SEffect": "Эффект",
+    "SDisablingPowerOff": "Выключение",
+    "SDisablingPowerOffReset": "Выключение со сбросом",
+    "SEffectCandle": "Свеча",
+    "SEffectColor": "Красочный"
+}

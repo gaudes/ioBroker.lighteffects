@@ -26,56 +26,122 @@ class Lighteffects extends utils.Adapter {
 	 * Is called when databases are connected and adapter received configuration.
 	 */
 	private async onReady(): Promise<void> {
-		// Initialize your adapter here
+		// Adapter starting
+		this.log.info("Adapter starting");
+		this.log.debug("Current config: " + JSON.stringify(this.config));
 
-		// The adapters config (in the instance object everything under the attribute "native") is accessible via
-		// this.config:
-		this.log.info("config option1: " + this.config.option1);
+		//#region Check config, create and cleanup states
+		// Get existing states
+		const oExistingObjects = await this.getAdapterObjectsAsync();
+		this.log.silly("Existing objects: " + JSON.stringify(oExistingObjects));
+		if (this.config.lights.length > 0) {
+			for (const cLight of this.config.lights) {
+				//#region Verify config element
+				if (cLight.name === "" || cLight.name === null) {
+					this.log.warn("Config contains light without name");
+					return;
+				}
+				if (cLight.state === "" || cLight.state === null) {
+					this.log.warn(`Config light ${cLight.name} has no object for state`);
+					return;
+				} else {
+					if ((await this.getForeignObjectAsync(cLight.state)) === null) {
+						this.log.warn(`Config light ${cLight.name} has not existing object for state`);
+						return;
+					}
+				}
+				if (cLight.brightness === "" || cLight.brightness === null) {
+					this.log.warn(`Config light ${cLight.name} has no object for brightness`);
+					return;
+				} else {
+					if ((await this.getForeignObjectAsync(cLight.brightness)) === null) {
+						this.log.warn(`Config light ${cLight.name} has not existing object for brightness`);
+						return;
+					}
+				}
+				if (cLight.color === "" || cLight.color === null) {
+					this.log.warn(`Config light ${cLight.name} has no object for color`);
+					return;
+				} else {
+					if ((await this.getForeignObjectAsync(cLight.color)) === null) {
+						this.log.warn(`Config light ${cLight.name} has not existing object for color`);
+						return;
+					}
+				}
+				if (cLight.transition === "" || cLight.transition === null) {
+					this.log.warn(`Config light ${cLight.name} has no object for transition`);
+					return;
+				} else {
+					if ((await this.getForeignObjectAsync(cLight.transition)) === null) {
+						this.log.warn(`Config light ${cLight.name} has not existing object for transition`);
+						return;
+					}
+				}
+				//#endregion
 
-		/*
-		For every state in the system there has to be also an object of type state
-		Here a simple template for a boolean variable named "testVariable"
-		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-		*/
-		await this.setObjectNotExistsAsync("testVariable", {
-			type: "state",
-			common: {
-				name: "testVariable",
-				type: "boolean",
-				role: "indicator",
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
+				//#region Creating objects when enabled
+				if (cLight.enabled === true) {
+					// Checking or createing device
+					if (oExistingObjects[this.name + "." + this.instance + "." + cLight.name]) {
+						// Already exists
+						delete oExistingObjects[this.name + "." + this.instance + "." + cLight.name];
+					} else {
+						// Create device
+						await this.createDeviceAsync(cLight.name);
+					}
+					// Checking or createing effect
+					if (oExistingObjects[this.name + "." + this.instance + "." + cLight.name + "." + "effect"]) {
+						// Already exists
+						delete oExistingObjects[this.name + "." + this.instance + "." + cLight.name + "." + "effect"];
+					} else {
+						// Create State
+						await this.setObjectNotExistsAsync(cLight.name + "." + "effect", {
+							type: "state",
+							common: {
+								name: "effect",
+								type: "string",
+								role: "state",
+								states: { color: "color", candle: "candle" },
+								read: true,
+								write: true,
+							},
+							native: {},
+						});
+						this.setStateAsync(cLight.name + "." + "effect", cLight.effect);
+					}
+					// Checking or createing state
+					if (oExistingObjects[this.name + "." + this.instance + "." + cLight.name + "." + "state"]) {
+						// Already exists
+						delete oExistingObjects[this.name + "." + this.instance + "." + cLight.name + "." + "state"];
+					} else {
+						// Create State
+						await this.setObjectNotExistsAsync(cLight.name + "." + "state", {
+							type: "state",
+							common: {
+								name: "state",
+								type: "boolean",
+								role: "state",
+								read: true,
+								write: true,
+							},
+							native: {},
+						});
+					}
+				}
+				//#endregion
 
-		// In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-		this.subscribeStates("testVariable");
-		// You can also add a subscription for multiple states. The following line watches all states starting with "lights."
-		// this.subscribeStates("lights.*");
-		// Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-		// this.subscribeStates("*");
+				//#region Cleanup state and subscribe object
+				await this.setStateAsync(cLight.name + "." + "state", false);
+				this.subscribeStates(cLight.name + "." + "state");
+				this.subscribeStates(cLight.name + "." + "effect");
+				//#endregion
+			}
 
-		/*
-			setState examples
-			you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-		*/
-		// the variable testVariable is set to true as command (ack=false)
-		await this.setStateAsync("testVariable", true);
-
-		// same thing, but the value is flagged "ack"
-		// ack should be always set to true if the value is received from or acknowledged from the target system
-		await this.setStateAsync("testVariable", { val: true, ack: true });
-
-		// same thing, but the state is deleted after 30s (getState will return null afterwards)
-		await this.setStateAsync("testVariable", { val: true, ack: true, expire: 30 });
-
-		// examples for the checkPassword/checkGroup functions
-		let result = await this.checkPasswordAsync("admin", "iobroker");
-		this.log.info("check user admin pw iobroker: " + result);
-
-		result = await this.checkGroupAsync("admin", "admin");
-		this.log.info("check group user admin group admin: " + result);
+			//#region Cleaning up reminding objects
+			this.log.debug(`REST: ${JSON.stringify(oExistingObjects)}`);
+			//#endregion
+		}
+		//#endregion
 	}
 
 	/**
@@ -83,32 +149,11 @@ class Lighteffects extends utils.Adapter {
 	 */
 	private onUnload(callback: () => void): void {
 		try {
-			// Here you must clear all timeouts or intervals that may still be active
-			// clearTimeout(timeout1);
-			// clearTimeout(timeout2);
-			// ...
-			// clearInterval(interval1);
-
 			callback();
 		} catch (e) {
 			callback();
 		}
 	}
-
-	// If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-	// You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-	// /**
-	//  * Is called if a subscribed object changes
-	//  */
-	// private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
-	// 	if (obj) {
-	// 		// The object was changed
-	// 		this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-	// 	} else {
-	// 		// The object was deleted
-	// 		this.log.info(`object ${id} deleted`);
-	// 	}
-	// }
 
 	/**
 	 * Is called if a subscribed state changes
@@ -122,23 +167,6 @@ class Lighteffects extends utils.Adapter {
 			this.log.info(`state ${id} deleted`);
 		}
 	}
-
-	// If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-	// /**
-	//  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-	//  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-	//  */
-	// private onMessage(obj: ioBroker.Message): void {
-	// 	if (typeof obj === "object" && obj.message) {
-	// 		if (obj.command === "send") {
-	// 			// e.g. send email or pushover or whatever
-	// 			this.log.info("send command");
-
-	// 			// Send response in callback if required
-	// 			if (obj.callback) this.sendTo(obj.from, obj.command, "Message received", obj.callback);
-	// 		}
-	// 	}
-	// }
 }
 
 if (require.main !== module) {

@@ -1,0 +1,102 @@
+{
+	"i18n": true,
+	"type": "tabs",
+	"items": {
+		"_lights": {
+			"type": "panel",
+			"label": "STabLights",
+			"items": {
+				"lights": {
+					"type": "table",
+					"sm": 12,
+					"md": 12,
+					"lg": 12,
+					"label": "STabLights",
+					"items": [
+						{
+							"type": "text",
+							"attr": "name",
+							"label": "SName",
+							"width": "15%",
+							"default": ""
+						},
+						{
+							"type": "checkbox",
+							"attr": "enabled",
+							"label": "SActive",
+							"width": "5%",
+							"default": true
+						},
+						{
+							"type": "objectId",
+							"attr": "state",
+							"label": "SState",
+							"width": "10%",
+							"default": ""
+						},
+						{
+							"type": "objectId",
+							"attr": "brightness",
+							"label": "SBrightness",
+							"width": "10%",
+							"default": ""
+						},
+						{
+							"type": "objectId",
+							"attr": "color",
+							"label": "SColor",
+							"width": "10%",
+							"default": ""
+						},
+						{
+							"type": "objectId",
+							"attr": "transition",
+							"label": "STransition",
+							"width": "10%",
+							"default": ""
+						},
+						{
+							"type": "select",
+							"attr": "effect",
+							"label": "SEffect",
+							"options": [
+								{
+									"label": "SEffectColor",
+									"value": "color"
+								},
+								{
+									"label": "SEffectCandle",
+									"value": "candle"
+								}
+							],
+							"width": "15%",
+							"default": "color"
+						},
+						{
+							"type": "select",
+							"attr": "disabling",
+							"label": "SDisabling",
+							"options": [
+								{
+									"label": "SDisablingPowerOff",
+									"value": "PowerOff"
+								},
+								{
+									"label": "SDisablingPowerOffReset",
+									"value": "PowerOffReset"
+								}
+							],
+							"width": "15%",
+							"default": "PowerOff"
+						}
+					]
+				}
+			}
+		},
+		"_effects": {
+			"type": "panel",
+			"label": "STabEffects",
+			"items": {}
+		}
+	}
+}
