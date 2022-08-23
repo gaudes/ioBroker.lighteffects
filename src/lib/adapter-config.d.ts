@@ -22,6 +22,7 @@ declare global {
 					disabling: string;
 				},
 			];
+			sentry_disable: boolean;
 		}
 	}
 }

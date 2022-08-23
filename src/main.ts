@@ -5,11 +5,27 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from "@iobroker/adapter-core";
+import { GlobalHelper } from "./modules/global-helper";
 
-// Load your modules here, e.g.:
-// import * as fs from "fs";
+let Helper: GlobalHelper;
+
+interface Light {
+	name: string;
+	enabled: boolean;
+	state: string;
+	brightness: string;
+	color: string;
+	transition: string;
+	effect: string;
+	disabling: string;
+	verified: boolean;
+	active: boolean;
+}
+
+let Lights: Light[];
 
 class Lighteffects extends utils.Adapter {
+	//#region Constructor
 	public constructor(options: Partial<utils.AdapterOptions> = {}) {
 		super({
 			...options,
@@ -17,66 +33,98 @@ class Lighteffects extends utils.Adapter {
 		});
 		this.on("ready", this.onReady.bind(this));
 		this.on("stateChange", this.onStateChange.bind(this));
-		// this.on("objectChange", this.onObjectChange.bind(this));
-		// this.on("message", this.onMessage.bind(this));
 		this.on("unload", this.onUnload.bind(this));
 	}
+	//#endregion
 
-	/**
-	 * Is called when databases are connected and adapter received configuration.
-	 */
+	//#region Base Functions of Adapter
+	//#region onReady
 	private async onReady(): Promise<void> {
+		// Init Helper
+		Helper = new GlobalHelper(this);
 		// Adapter starting
-		this.log.info("Adapter starting");
-		this.log.debug("Current config: " + JSON.stringify(this.config));
-
+		Helper.ReportingInfo("Info", "Adapter", "Adapter starting");
+		Helper.ReportingInfo("Debug", "Adapter", "Current config: " + JSON.stringify(this.config));
+		Lights = [];
 		//#region Check config, create and cleanup states
 		// Get existing states
 		const oExistingObjects = await this.getAdapterObjectsAsync();
-		this.log.silly("Existing objects: " + JSON.stringify(oExistingObjects));
+		Helper.ReportingInfo("Debug", "Adapter", "Existing objects: " + JSON.stringify(oExistingObjects));
 		if (this.config.lights.length > 0) {
 			for (const cLight of this.config.lights) {
+				// Creating internal object from config
+				Lights.push({
+					name: cLight.name,
+					enabled: cLight.enabled,
+					state: cLight.state,
+					brightness: cLight.brightness,
+					color: cLight.color,
+					transition: cLight.transition,
+					effect: cLight.effect,
+					disabling: cLight.disabling,
+					verified: false,
+					active: false,
+				});
+
 				//#region Verify config element
 				if (cLight.name === "" || cLight.name === null) {
-					this.log.warn("Config contains light without name");
+					Helper.ReportingInfo("Warn", "Adapter", "Config contains light without name");
 					return;
 				}
 				if (cLight.state === "" || cLight.state === null) {
-					this.log.warn(`Config light ${cLight.name} has no object for state`);
+					Helper.ReportingInfo("Warn", "Adapter", `Config light ${cLight.name} has no object for state`);
 					return;
 				} else {
 					if ((await this.getForeignObjectAsync(cLight.state)) === null) {
-						this.log.warn(`Config light ${cLight.name} has not existing object for state`);
+						Helper.ReportingInfo(
+							"Warn",
+							"Adapter",
+							`Config light ${cLight.name} has not existing object for state`,
+						);
 						return;
 					}
 				}
 				if (cLight.brightness === "" || cLight.brightness === null) {
-					this.log.warn(`Config light ${cLight.name} has no object for brightness`);
+					Helper.ReportingInfo("Warn", "Adapter", `Config light ${cLight.name} has no object for brightness`);
 					return;
 				} else {
 					if ((await this.getForeignObjectAsync(cLight.brightness)) === null) {
-						this.log.warn(`Config light ${cLight.name} has not existing object for brightness`);
+						Helper.ReportingInfo(
+							"Warn",
+							"Adapter",
+							`Config light ${cLight.name} has not existing object for brightness`,
+						);
 						return;
 					}
 				}
 				if (cLight.color === "" || cLight.color === null) {
-					this.log.warn(`Config light ${cLight.name} has no object for color`);
+					Helper.ReportingInfo("Warn", "Adapter", `Config light ${cLight.name} has no object for color`);
 					return;
 				} else {
 					if ((await this.getForeignObjectAsync(cLight.color)) === null) {
-						this.log.warn(`Config light ${cLight.name} has not existing object for color`);
+						Helper.ReportingInfo(
+							"Warn",
+							"Adapter",
+							`Config light ${cLight.name} has not existing object for color`,
+						);
 						return;
 					}
 				}
 				if (cLight.transition === "" || cLight.transition === null) {
-					this.log.warn(`Config light ${cLight.name} has no object for transition`);
+					Helper.ReportingInfo("Warn", "Adapter", `Config light ${cLight.name} has no object for transition`);
 					return;
 				} else {
 					if ((await this.getForeignObjectAsync(cLight.transition)) === null) {
-						this.log.warn(`Config light ${cLight.name} has not existing object for transition`);
+						Helper.ReportingInfo(
+							"Warn",
+							"Adapter",
+							`Config light ${cLight.name} has not existing object for transition`,
+						);
 						return;
 					}
 				}
+				// Setting verified of internal object
+				Lights[Lights.findIndex((obj) => obj.name === cLight.name)].verified = true;
 				//#endregion
 
 				//#region Creating objects when enabled
@@ -101,13 +149,12 @@ class Lighteffects extends utils.Adapter {
 								name: "effect",
 								type: "string",
 								role: "state",
-								states: { color: "color", candle: "candle" },
+								states: { color: "color", candle: "candle", alarm: "alarm" },
 								read: true,
 								write: true,
 							},
 							native: {},
 						});
-						this.setStateAsync(cLight.name + "." + "effect", cLight.effect);
 					}
 					// Checking or createing state
 					if (oExistingObjects[this.name + "." + this.instance + "." + cLight.name + "." + "state"]) {
@@ -132,21 +179,27 @@ class Lighteffects extends utils.Adapter {
 
 				//#region Cleanup state and subscribe object
 				await this.setStateAsync(cLight.name + "." + "state", false);
+				await this.setStateAsync(cLight.name + "." + "effect", cLight.effect);
 				this.subscribeStates(cLight.name + "." + "state");
 				this.subscribeStates(cLight.name + "." + "effect");
 				//#endregion
 			}
 
+			Helper.ReportingInfo("Debug", "Adapter", `Internal Lights object: ${JSON.stringify(Lights)}`);
+
 			//#region Cleaning up reminding objects
-			this.log.debug(`REST: ${JSON.stringify(oExistingObjects)}`);
+			Helper.ReportingInfo("Debug", "Adapter", `Objects to cleanup: ${JSON.stringify(oExistingObjects)}`);
+			Object.entries(oExistingObjects).map(([key, _value]) => {
+				Helper.ReportingInfo("Debug", "Adapter", `Deleting unneeded object ${key}`);
+				this.delForeignObjectAsync(key);
+			});
 			//#endregion
 		}
 		//#endregion
 	}
+	//#endregion
 
-	/**
-	 * Is called when adapter shuts down - callback has to be called under any circumstances!
-	 */
+	//#region onUnload
 	private onUnload(callback: () => void): void {
 		try {
 			callback();
@@ -154,19 +207,51 @@ class Lighteffects extends utils.Adapter {
 			callback();
 		}
 	}
+	//#endregion
 
-	/**
-	 * Is called if a subscribed state changes
-	 */
+	//#region onStateChange
 	private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
 		if (state) {
-			// The state was changed
-			this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+			Helper.ReportingInfo("Debug", "Adapter", `state ${id} changed: ${state.val} (ack = ${state.ack})`);
+			// Get Name of Config Light
+			const LightName = id.split(".")[2];
+			// Get object name for light
+			const ChangedProperty = id.split(".")[3];
+			if (ChangedProperty === "effect") {
+				Lights[Lights.findIndex((obj) => obj.name === LightName)].effect === state.val;
+				if (Lights[Lights.findIndex((obj) => obj.name === LightName)].active === true) {
+					// CHANGE EFFECT
+				}
+			}
+			if (ChangedProperty === "state") {
+				// Enable effect
+				if (state.val === true) {
+					switch (Lights[Lights.findIndex((obj) => obj.name === LightName)].effect) {
+						case "alarm":
+							this.effectAlarm(LightName);
+							break;
+					}
+				} else {
+					Lights[Lights.findIndex((obj) => obj.name === LightName)].active = false;
+				}
+			}
 		} else {
-			// The state was deleted
-			this.log.info(`state ${id} deleted`);
+			Helper.ReportingInfo("Debug", "Adapter", `state ${id} deleted`);
 		}
 	}
+	//#endregion
+	//#endregion
+
+	//#region Effect Functions
+
+	//#region Effect Alarm
+	private effectAlarm(LightName: string): void {
+		Helper.ReportingInfo("Info", "Adapter", `Effect alarm for ${LightName}`);
+		Lights[Lights.findIndex((obj) => obj.name === LightName)].active = true;
+	}
+	//#endregion
+
+	//#endregion
 }
 
 if (require.main !== module) {

@@ -13,5 +13,6 @@
     "SDisablingPowerOff": "Выключение",
     "SDisablingPowerOffReset": "Выключение со сбросом",
     "SEffectCandle": "Свеча",
-    "SEffectColor": "Красочный"
+    "SEffectColor": "Красочный",
+    "SEffectAlarm": "Тревога"
 }

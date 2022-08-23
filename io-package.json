@@ -87,7 +87,16 @@
             {
                 "js-controller": ">=2.0.0"
             }
-        ]
+        ],
+        "plugins": {
+            "sentry": {
+                "dsn": "https://0832d5a217aa4dfc95151afe565c835e@sentry.iobroker.net/9999",
+                "errorBlacklist": [
+                    "SyntaxError",
+                    "HANDLED"
+                ]
+            }
+        }
     },
     "native": {
         "lights": [
@@ -101,7 +110,8 @@
                 "effect": "",
                 "disabling": ""
             }
-        ]
+        ],
+        "sentry_disable": true
     },
     "objects": [],
     "instanceObjects": []

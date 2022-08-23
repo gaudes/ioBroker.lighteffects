@@ -23,6 +23,7 @@
     "@alcalzone/release-script": "^2.2.2",
     "@iobroker/adapter-dev": "^1.0.1",
     "@iobroker/testing": "^3.0.2",
+    "@sentry/types": "^7.11.1",
     "@types/chai": "^4.3.3",
     "@types/chai-as-promised": "^7.1.5",
     "@types/mocha": "^9.1.1",
