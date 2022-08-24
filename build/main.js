@@ -201,16 +201,13 @@ class Lighteffects extends utils.Adapter {
     Helper.ReportingInfo("Info", "effectAlarm", `Effect alarm for ${Light.name}`);
     Light.active = true;
     await this.saveCurrentValues(Light);
-    await this.setForeignStateAsync(Light.transition, 0, true);
-    await new Promise((f) => setTimeout(f, 100));
-    await this.setForeignStateAsync(Light.color, "red", true);
-    await new Promise((f) => setTimeout(f, 100));
-    await this.setForeignStateAsync(Light.state, true, true);
-    await new Promise((f) => setTimeout(f, 100));
+    await this.setForeignStateAsync(Light.transition, 0);
+    await this.setForeignStateAsync(Light.color, "red");
+    await this.setForeignStateAsync(Light.state, true);
     for (let i = 0; i < 4; i++) {
-      await this.setForeignStateAsync(Light.brightness, 100, true);
+      await this.setForeignStateAsync(Light.brightness, 100);
       await new Promise((f) => setTimeout(f, 1e3));
-      await this.setForeignStateAsync(Light.brightness, 1, true);
+      await this.setForeignStateAsync(Light.brightness, 1);
       await new Promise((f) => setTimeout(f, 1e3));
     }
     switch (Light.disabling) {
