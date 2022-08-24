@@ -233,6 +233,7 @@ class Lighteffects extends utils.Adapter {
 			const ChangedProperty = id.split(".")[3];
 			// Get internal light object
 			const CurrLight = Lights[Lights.findIndex((obj) => obj.name === LightName)];
+			Helper.ReportingInfo("Debug", "Adapter", `CurrentLight: ${JSON.stringify(CurrLight)}`);
 			if (ChangedProperty === "effect") {
 				CurrLight.effect === state.val;
 				if (CurrLight.active === true) {
