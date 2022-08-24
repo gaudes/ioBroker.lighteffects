@@ -263,13 +263,10 @@ class Lighteffects extends utils.Adapter {
 		await this.saveCurrentValues(Light);
 		// Set transition time to 0
 		await this.setForeignStateAsync(Light.transition, 0);
-		//await new Promise((f) => setTimeout(f, 100));
 		// Set color to red
 		await this.setForeignStateAsync(Light.color, "red");
-		//await new Promise((f) => setTimeout(f, 100));
 		// Power on
 		await this.setForeignStateAsync(Light.state, true);
-		//await new Promise((f) => setTimeout(f, 100));
 		for (let i = 0; i < 4; i++) {
 			// Set brightness to 100%
 			await this.setForeignStateAsync(Light.brightness, 100);
@@ -353,12 +350,9 @@ class Lighteffects extends utils.Adapter {
 			`Restore current values for ${Light.name} to brightness ${Light.currentbrightness}, color ${Light.currentcolor}, Transition ${Light.currenttransition}, State ${Light.currentstate}`,
 		);
 		await this.setForeignStateAsync(Light.brightness, Light.currentbrightness);
-		await new Promise((f) => setTimeout(f, 100));
-		await this.setForeignStateAsync(Light.color, Light.currentcolor);
-		await new Promise((f) => setTimeout(f, 100));
-		await this.setForeignStateAsync(Light.transition, Light.currenttransition);
-		await new Promise((f) => setTimeout(f, 100));
 		await this.setForeignStateAsync(Light.state, Light.currentstate);
+		await this.setForeignStateAsync(Light.color, Light.currentcolor);
+		await this.setForeignStateAsync(Light.transition, Light.currenttransition);
 	}
 	//#endregion
 
