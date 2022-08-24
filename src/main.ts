@@ -232,14 +232,14 @@ class Lighteffects extends utils.Adapter {
 			// Get object name for light
 			const ChangedProperty = id.split(".")[3];
 			// Get internal light object
-			const CurrLight = Lights[Lights.findIndex((obj) => obj.name === LightName)];
+			const CurrLight = Lights[Lights.findIndex((obj) => obj.name == LightName)];
 			Helper.ReportingInfo("Debug", "Adapter", `CurrentLight: ${JSON.stringify(CurrLight)}`);
 			if (ChangedProperty === "effect") {
-				Lights[Lights.findIndex((obj) => obj.name === LightName)].effect === state.val;
+				Lights[Lights.findIndex((obj) => obj.name == LightName)].effect === state.val;
 				Helper.ReportingInfo(
 					"Debug",
 					"Adapter",
-					`Effect set: ${JSON.stringify(Lights[Lights.findIndex((obj) => obj.name === LightName)])}`,
+					`Effect set: ${JSON.stringify(Lights[Lights.findIndex((obj) => obj.name == LightName)])}`,
 				);
 				Helper.ReportingInfo("Debug", "Adapter", `CurrentLight2: ${JSON.stringify(CurrLight)}`);
 				if (CurrLight.active === true) {
@@ -261,7 +261,7 @@ class Lighteffects extends utils.Adapter {
 							break;
 					}
 				} else {
-					Lights[Lights.findIndex((obj) => obj.name === LightName)].active = false;
+					Lights[Lights.findIndex((obj) => obj.name == LightName)].active = false;
 				}
 			}
 		} else {

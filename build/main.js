@@ -182,14 +182,14 @@ class Lighteffects extends utils.Adapter {
       Helper.ReportingInfo("Debug", "Adapter", `state ${id} changed: ${state.val} (ack = ${state.ack})`);
       const LightName = id.split(".")[2];
       const ChangedProperty = id.split(".")[3];
-      const CurrLight = Lights[Lights.findIndex((obj) => obj.name === LightName)];
+      const CurrLight = Lights[Lights.findIndex((obj) => obj.name == LightName)];
       Helper.ReportingInfo("Debug", "Adapter", `CurrentLight: ${JSON.stringify(CurrLight)}`);
       if (ChangedProperty === "effect") {
-        Lights[Lights.findIndex((obj) => obj.name === LightName)].effect === state.val;
+        Lights[Lights.findIndex((obj) => obj.name == LightName)].effect === state.val;
         Helper.ReportingInfo(
           "Debug",
           "Adapter",
-          `Effect set: ${JSON.stringify(Lights[Lights.findIndex((obj) => obj.name === LightName)])}`
+          `Effect set: ${JSON.stringify(Lights[Lights.findIndex((obj) => obj.name == LightName)])}`
         );
         Helper.ReportingInfo("Debug", "Adapter", `CurrentLight2: ${JSON.stringify(CurrLight)}`);
         if (CurrLight.active === true) {
@@ -209,7 +209,7 @@ class Lighteffects extends utils.Adapter {
               break;
           }
         } else {
-          Lights[Lights.findIndex((obj) => obj.name === LightName)].active = false;
+          Lights[Lights.findIndex((obj) => obj.name == LightName)].active = false;
         }
       }
     } else {
