@@ -236,6 +236,11 @@ class Lighteffects extends utils.Adapter {
 			Helper.ReportingInfo("Debug", "Adapter", `CurrentLight: ${JSON.stringify(CurrLight)}`);
 			if (ChangedProperty === "effect") {
 				Lights[Lights.findIndex((obj) => obj.name === LightName)].effect === state.val;
+				Helper.ReportingInfo(
+					"Debug",
+					"Adapter",
+					`Effect set: ${JSON.stringify(Lights[Lights.findIndex((obj) => obj.name === LightName)])}`,
+				);
 				if (CurrLight.active === true) {
 					// CHANGE EFFECT
 				}
