@@ -241,6 +241,7 @@ class Lighteffects extends utils.Adapter {
 					"Adapter",
 					`Effect set: ${JSON.stringify(Lights[Lights.findIndex((obj) => obj.name === LightName)])}`,
 				);
+				Helper.ReportingInfo("Debug", "Adapter", `CurrentLight2: ${JSON.stringify(CurrLight)}`);
 				if (CurrLight.active === true) {
 					// CHANGE EFFECT
 				}
