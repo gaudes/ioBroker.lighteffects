@@ -226,6 +226,7 @@ class Lighteffects extends utils.Adapter {
     switch (Light.disabling) {
       case "Reset": {
         await this.restoreCurrentValues(Light);
+        break;
       }
       case "PowerOffRestore": {
         await this.restoreCurrentValues(Light);
