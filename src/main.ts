@@ -265,6 +265,8 @@ class Lighteffects extends utils.Adapter {
 		await this.setForeignStateAsync(Light.transition, 0, true);
 		// Set color to red
 		await this.setForeignStateAsync(Light.color, "red", true);
+		// Power on
+		await this.setForeignStateAsync(Light.state, true, true);
 		for (let i = 0; i < 4; i++) {
 			// Set brightness to 100%
 			await this.setForeignStateAsync(Light.brightness, 100, true);
