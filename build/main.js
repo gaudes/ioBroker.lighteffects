@@ -184,14 +184,8 @@ class Lighteffects extends utils.Adapter {
       const ChangedProperty = id.split(".")[3];
       const CurrLight = Lights[Lights.findIndex((obj) => obj.name == LightName)];
       Helper.ReportingInfo("Debug", "Adapter", `CurrentLight: ${JSON.stringify(CurrLight)}`);
-      if (ChangedProperty === "effect") {
-        Lights[Lights.findIndex((obj) => obj.name == LightName)].effect === state.val;
-        Helper.ReportingInfo(
-          "Debug",
-          "Adapter",
-          `Effect set: ${JSON.stringify(Lights[Lights.findIndex((obj) => obj.name == LightName)])}`
-        );
-        Helper.ReportingInfo("Debug", "Adapter", `CurrentLight2: ${JSON.stringify(CurrLight)}`);
+      if (ChangedProperty === "effect" && state.val !== null && state.val !== "undefined" && typeof state.val === "string") {
+        Lights[Lights.findIndex((obj) => obj.name == LightName)].effect = state.val;
         if (CurrLight.active === true) {
         }
       }
