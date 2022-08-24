@@ -157,7 +157,13 @@ class Lighteffects extends utils.Adapter {
 								name: "effect",
 								type: "string",
 								role: "state",
-								states: { color: "color", candle: "candle", alarm: "alarm" },
+								states: {
+									color: "color",
+									candle: "candle",
+									notifyAlarm: "notifyAlarm",
+									notifyWarn: "notifyWarn",
+									notifyInfo: "notifyInfo",
+								},
 								read: true,
 								write: true,
 							},
@@ -237,8 +243,14 @@ class Lighteffects extends utils.Adapter {
 				// Enable effect
 				if (state.val === true) {
 					switch (CurrLight.effect) {
-						case "alarm":
-							this.effectAlarm(CurrLight);
+						case "notifyAlarm":
+							this.effectNotify(CurrLight, "red");
+							break;
+						case "notifyInfo":
+							this.effectNotify(CurrLight, "blue");
+							break;
+						case "notifyWarn":
+							this.effectNotify(CurrLight, "orange");
 							break;
 					}
 				} else {
@@ -257,14 +269,14 @@ class Lighteffects extends utils.Adapter {
 
 	//#region Effect Alarm
 	// Simple effect: Set color, switch brightness from 1 to 100 three times, handle poweroff behaviour
-	private async effectAlarm(Light: Light): Promise<void> {
+	private async effectNotify(Light: Light, Color: string): Promise<void> {
 		Helper.ReportingInfo("Info", "effectAlarm", `Effect alarm for ${Light.name}`);
 		Light.active = true;
 		await this.saveCurrentValues(Light);
 		// Set transition time to 0
 		await this.setForeignStateAsync(Light.transition, 0);
 		// Set color to red
-		await this.setForeignStateAsync(Light.color, "red");
+		await this.setForeignStateAsync(Light.color, Color);
 		// Power on
 		await this.setForeignStateAsync(Light.state, true);
 		for (let i = 0; i < 4; i++) {

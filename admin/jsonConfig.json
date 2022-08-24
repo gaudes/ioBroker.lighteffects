@@ -69,8 +69,16 @@
 									"value": "candle"
 								},
 								{
-									"label": "SEffectAlarm",
-									"value": "alarm"
+									"label": "SEffectNotifyInfo",
+									"value": "notifyInfo"
+								},
+								{
+									"label": "SEffectNotifyWarn",
+									"value": "notifyWarn"
+								},
+								{
+									"label": "SEffectNotifyAlarm",
+									"value": "notifyAlarm"
 								}
 							],
 							"width": "15%",

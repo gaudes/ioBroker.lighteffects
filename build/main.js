@@ -128,7 +128,13 @@ class Lighteffects extends utils.Adapter {
                 name: "effect",
                 type: "string",
                 role: "state",
-                states: { color: "color", candle: "candle", alarm: "alarm" },
+                states: {
+                  color: "color",
+                  candle: "candle",
+                  notifyAlarm: "notifyAlarm",
+                  notifyWarn: "notifyWarn",
+                  notifyInfo: "notifyInfo"
+                },
                 read: true,
                 write: true
               },
@@ -185,8 +191,14 @@ class Lighteffects extends utils.Adapter {
       if (ChangedProperty === "state") {
         if (state.val === true) {
           switch (CurrLight.effect) {
-            case "alarm":
-              this.effectAlarm(CurrLight);
+            case "notifyAlarm":
+              this.effectNotify(CurrLight, "red");
+              break;
+            case "notifyInfo":
+              this.effectNotify(CurrLight, "blue");
+              break;
+            case "notifyWarn":
+              this.effectNotify(CurrLight, "orange");
               break;
           }
         } else {
@@ -197,12 +209,12 @@ class Lighteffects extends utils.Adapter {
       Helper.ReportingInfo("Debug", "Adapter", `state ${id} deleted`);
     }
   }
-  async effectAlarm(Light) {
+  async effectNotify(Light, Color) {
     Helper.ReportingInfo("Info", "effectAlarm", `Effect alarm for ${Light.name}`);
     Light.active = true;
     await this.saveCurrentValues(Light);
     await this.setForeignStateAsync(Light.transition, 0);
-    await this.setForeignStateAsync(Light.color, "red");
+    await this.setForeignStateAsync(Light.color, Color);
     await this.setForeignStateAsync(Light.state, true);
     for (let i = 0; i < 4; i++) {
       await this.setForeignStateAsync(Light.brightness, 100);
