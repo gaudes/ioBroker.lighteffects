@@ -20,6 +20,10 @@ interface Light {
 	disabling: string;
 	verified: boolean;
 	active: boolean;
+	currentstate: boolean | null;
+	currentbrightness: number | null;
+	currentcolor: string | null;
+	currenttransition: number | null;
 }
 
 let Lights: Light[];
@@ -64,6 +68,10 @@ class Lighteffects extends utils.Adapter {
 					disabling: cLight.disabling,
 					verified: false,
 					active: false,
+					currentstate: null,
+					currentbrightness: null,
+					currentcolor: null,
+					currenttransition: null,
 				});
 
 				//#region Verify config element
@@ -217,26 +225,29 @@ class Lighteffects extends utils.Adapter {
 			const LightName = id.split(".")[2];
 			// Get object name for light
 			const ChangedProperty = id.split(".")[3];
+			// Get internal light object
+			const CurrLight = Lights[Lights.findIndex((obj) => obj.name === LightName)];
 			if (ChangedProperty === "effect") {
-				Lights[Lights.findIndex((obj) => obj.name === LightName)].effect === state.val;
-				if (Lights[Lights.findIndex((obj) => obj.name === LightName)].active === true) {
+				CurrLight.effect === state.val;
+				if (CurrLight.active === true) {
 					// CHANGE EFFECT
 				}
 			}
 			if (ChangedProperty === "state") {
 				// Enable effect
 				if (state.val === true) {
-					switch (Lights[Lights.findIndex((obj) => obj.name === LightName)].effect) {
+					switch (CurrLight.effect) {
 						case "alarm":
-							this.effectAlarm(LightName);
+							this.effectAlarm(CurrLight);
 							break;
 					}
 				} else {
-					Lights[Lights.findIndex((obj) => obj.name === LightName)].active = false;
+					CurrLight.active = false;
 				}
 			}
 		} else {
 			Helper.ReportingInfo("Debug", "Adapter", `state ${id} deleted`);
+			// Deleted states by user ? Restart adapter ?
 		}
 	}
 	//#endregion
@@ -245,9 +256,101 @@ class Lighteffects extends utils.Adapter {
 	//#region Effect Functions
 
 	//#region Effect Alarm
-	private effectAlarm(LightName: string): void {
-		Helper.ReportingInfo("Info", "Adapter", `Effect alarm for ${LightName}`);
-		Lights[Lights.findIndex((obj) => obj.name === LightName)].active = true;
+	// Simple effect: Set color, switch brightness from 1 to 100 three times, handle poweroff behaviour
+	private async effectAlarm(Light: Light): Promise<void> {
+		Helper.ReportingInfo("Info", "effectAlarm", `Effect alarm for ${Light.name}`);
+		Light.active = true;
+		await this.saveCurrentValues(Light);
+		// Set transition time to 0
+		await this.setForeignStateAsync(Light.transition, 0, true);
+		// Set color to red
+		await this.setForeignStateAsync(Light.color, "red", true);
+		for (let i = 0; i < 4; i++) {
+			// Set brightness to 100%
+			await this.setForeignStateAsync(Light.brightness, 100, true);
+			// Sleep 1s
+			await new Promise((f) => setTimeout(f, 1000));
+			// Set brightness to 1%
+			await this.setForeignStateAsync(Light.brightness, 1, true);
+			// Sleep 1s
+			await new Promise((f) => setTimeout(f, 1000));
+		}
+		switch (Light.disabling) {
+			case "Reset": {
+				await this.restoreCurrentValues(Light);
+			}
+			case "PowerOffRestore": {
+				await this.restoreCurrentValues(Light);
+				await this.setForeignStateAsync(Light.state, false);
+				break;
+			}
+			default: {
+				await this.setForeignStateAsync(Light.state, false);
+				break;
+			}
+		}
+		Light.active = false;
+		await this.setStateAsync(Light.name + "." + "state", false);
+	}
+	//#endregion
+
+	//#region saveCurrentValues
+	// Save current settings of light
+	private async saveCurrentValues(Light: Light): Promise<void> {
+		Helper.ReportingInfo("Debug", "saveCurrentValues", `Save current values for ${Light.name}`);
+		// Save state
+		const CurrState = await this.getForeignStateAsync(Light.state);
+		if (CurrState!.val === true) {
+			Light.currentstate = true;
+		} else {
+			Light.currentstate = false;
+		}
+		// Save brightness
+		const CurrBrightness = await this.getForeignStateAsync(Light.brightness);
+		if (
+			CurrBrightness!.val !== null &&
+			CurrBrightness!.val !== "undefined" &&
+			typeof CurrBrightness!.val === "number" &&
+			CurrBrightness!.val >= 0
+		) {
+			Light.currentbrightness = CurrBrightness!.val;
+		} else {
+			Light.currentbrightness = 100;
+		}
+		// Save color
+		const CurrColor = await this.getForeignStateAsync(Light.color);
+		if (CurrColor!.val !== null && CurrColor!.val !== "undefined" && typeof CurrColor!.val === "string") {
+			Light.currentcolor = CurrColor!.val;
+		} else {
+			Light.currentcolor = "white";
+		}
+		// Save transition time
+		const CurrTransition = await this.getForeignStateAsync(Light.transition);
+		if (
+			CurrTransition!.val !== null &&
+			CurrTransition!.val !== "undefined" &&
+			typeof CurrTransition!.val === "number" &&
+			CurrTransition!.val >= 0
+		) {
+			Light.currenttransition = CurrTransition!.val;
+		} else {
+			Light.currenttransition = 0;
+		}
+	}
+	//#endregion
+
+	//#region restoreCurrentValues
+	// Save current settings of light
+	private async restoreCurrentValues(Light: Light): Promise<void> {
+		Helper.ReportingInfo(
+			"Debug",
+			"restoreCurrentValues",
+			`Restore current values for ${Light.name} to brightness ${Light.currentbrightness}, color ${Light.currentcolor}, Transition ${Light.currenttransition}, State ${Light.currentstate}`,
+		);
+		await this.setForeignStateAsync(Light.brightness, Light.currentbrightness);
+		await this.setForeignStateAsync(Light.color, Light.currentcolor);
+		await this.setForeignStateAsync(Light.transition, Light.currenttransition);
+		await this.setForeignStateAsync(Light.state, Light.currentstate);
 	}
 	//#endregion
 

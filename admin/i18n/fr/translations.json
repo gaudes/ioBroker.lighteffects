@@ -14,5 +14,6 @@
     "SDisablingPowerOffReset": "Mise hors tension avec réinitialisation",
     "SEffectCandle": "Bougie",
     "SEffectColor": "Coloré",
-    "SEffectAlarm": "Alarme"
+    "SEffectAlarm": "Alarme",
+    "SDisablingReset": "Réinitialiser les paramètres précédents"
 }

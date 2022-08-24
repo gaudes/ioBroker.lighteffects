@@ -14,5 +14,6 @@
     "SDisablingPowerOffReset": "断电复位",
     "SEffectCandle": "蜡烛",
     "SEffectColor": "丰富多彩的",
-    "SEffectAlarm": "警报"
+    "SEffectAlarm": "警报",
+    "SDisablingReset": "重置以前的设置"
 }

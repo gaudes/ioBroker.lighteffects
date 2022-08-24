@@ -50,7 +50,11 @@ class Lighteffects extends utils.Adapter {
           effect: cLight.effect,
           disabling: cLight.disabling,
           verified: false,
-          active: false
+          active: false,
+          currentstate: null,
+          currentbrightness: null,
+          currentcolor: null,
+          currenttransition: null
         });
         if (cLight.name === "" || cLight.name === null) {
           Helper.ReportingInfo("Warn", "Adapter", "Config contains light without name");
@@ -172,29 +176,93 @@ class Lighteffects extends utils.Adapter {
       Helper.ReportingInfo("Debug", "Adapter", `state ${id} changed: ${state.val} (ack = ${state.ack})`);
       const LightName = id.split(".")[2];
       const ChangedProperty = id.split(".")[3];
+      const CurrLight = Lights[Lights.findIndex((obj) => obj.name === LightName)];
       if (ChangedProperty === "effect") {
-        Lights[Lights.findIndex((obj) => obj.name === LightName)].effect === state.val;
-        if (Lights[Lights.findIndex((obj) => obj.name === LightName)].active === true) {
+        CurrLight.effect === state.val;
+        if (CurrLight.active === true) {
         }
       }
       if (ChangedProperty === "state") {
         if (state.val === true) {
-          switch (Lights[Lights.findIndex((obj) => obj.name === LightName)].effect) {
+          switch (CurrLight.effect) {
             case "alarm":
-              this.effectAlarm(LightName);
+              this.effectAlarm(CurrLight);
               break;
           }
         } else {
-          Lights[Lights.findIndex((obj) => obj.name === LightName)].active = false;
+          CurrLight.active = false;
         }
       }
     } else {
       Helper.ReportingInfo("Debug", "Adapter", `state ${id} deleted`);
     }
   }
-  effectAlarm(LightName) {
-    Helper.ReportingInfo("Info", "Adapter", `Effect alarm for ${LightName}`);
-    Lights[Lights.findIndex((obj) => obj.name === LightName)].active = true;
+  async effectAlarm(Light) {
+    Helper.ReportingInfo("Info", "effectAlarm", `Effect alarm for ${Light.name}`);
+    Light.active = true;
+    await this.saveCurrentValues(Light);
+    await this.setForeignStateAsync(Light.transition, 0, true);
+    await this.setForeignStateAsync(Light.color, "red", true);
+    for (let i = 0; i < 4; i++) {
+      await this.setForeignStateAsync(Light.brightness, 100, true);
+      await new Promise((f) => setTimeout(f, 1e3));
+      await this.setForeignStateAsync(Light.brightness, 1, true);
+      await new Promise((f) => setTimeout(f, 1e3));
+    }
+    switch (Light.disabling) {
+      case "Reset": {
+        await this.restoreCurrentValues(Light);
+      }
+      case "PowerOffRestore": {
+        await this.restoreCurrentValues(Light);
+        await this.setForeignStateAsync(Light.state, false);
+        break;
+      }
+      default: {
+        await this.setForeignStateAsync(Light.state, false);
+        break;
+      }
+    }
+    Light.active = false;
+    await this.setStateAsync(Light.name + ".state", false);
+  }
+  async saveCurrentValues(Light) {
+    Helper.ReportingInfo("Debug", "saveCurrentValues", `Save current values for ${Light.name}`);
+    const CurrState = await this.getForeignStateAsync(Light.state);
+    if (CurrState.val === true) {
+      Light.currentstate = true;
+    } else {
+      Light.currentstate = false;
+    }
+    const CurrBrightness = await this.getForeignStateAsync(Light.brightness);
+    if (CurrBrightness.val !== null && CurrBrightness.val !== "undefined" && typeof CurrBrightness.val === "number" && CurrBrightness.val >= 0) {
+      Light.currentbrightness = CurrBrightness.val;
+    } else {
+      Light.currentbrightness = 100;
+    }
+    const CurrColor = await this.getForeignStateAsync(Light.color);
+    if (CurrColor.val !== null && CurrColor.val !== "undefined" && typeof CurrColor.val === "string") {
+      Light.currentcolor = CurrColor.val;
+    } else {
+      Light.currentcolor = "white";
+    }
+    const CurrTransition = await this.getForeignStateAsync(Light.transition);
+    if (CurrTransition.val !== null && CurrTransition.val !== "undefined" && typeof CurrTransition.val === "number" && CurrTransition.val >= 0) {
+      Light.currenttransition = CurrTransition.val;
+    } else {
+      Light.currenttransition = 0;
+    }
+  }
+  async restoreCurrentValues(Light) {
+    Helper.ReportingInfo(
+      "Debug",
+      "restoreCurrentValues",
+      `Restore current values for ${Light.name} to brightness ${Light.currentbrightness}, color ${Light.currentcolor}, Transition ${Light.currenttransition}, State ${Light.currentstate}`
+    );
+    await this.setForeignStateAsync(Light.brightness, Light.currentbrightness);
+    await this.setForeignStateAsync(Light.color, Light.currentcolor);
+    await this.setForeignStateAsync(Light.transition, Light.currenttransition);
+    await this.setForeignStateAsync(Light.state, Light.currentstate);
   }
 }
 if (require.main !== module) {

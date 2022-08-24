@@ -88,6 +88,10 @@
 								{
 									"label": "SDisablingPowerOffReset",
 									"value": "PowerOffReset"
+								},
+								{
+									"label": "SDisablingReset",
+									"value": "Reset"
 								}
 							],
 							"width": "15%",

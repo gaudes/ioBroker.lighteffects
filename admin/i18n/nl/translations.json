@@ -14,5 +14,6 @@
     "SDisablingPowerOffReset": "Uitschakelen met reset",
     "SEffectCandle": "Kaars",
     "SEffectColor": "Kleurrijk",
-    "SEffectAlarm": "Alarm"
+    "SEffectAlarm": "Alarm",
+    "SDisablingReset": "Vorige instellingen resetten"
 }

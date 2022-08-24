@@ -14,5 +14,6 @@
     "SDisablingPowerOffReset": "Desligar com reset",
     "SEffectCandle": "Vela",
     "SEffectColor": "Colorido",
-    "SEffectAlarm": "Alarme"
+    "SEffectAlarm": "Alarme",
+    "SDisablingReset": "Redefinir configurações anteriores"
 }

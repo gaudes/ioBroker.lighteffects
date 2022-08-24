@@ -14,5 +14,6 @@
     "SDisablingPowerOffReset": "Ausschalten mit Reset",
     "SEffectCandle": "Kerze",
     "SEffectColor": "Bunt",
-    "SEffectAlarm": "Alarm"
+    "SEffectAlarm": "Alarm",
+    "SDisablingReset": "Vorherige Einstellungen zurücksetzen"
 }
