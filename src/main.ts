@@ -235,7 +235,7 @@ class Lighteffects extends utils.Adapter {
 			const CurrLight = Lights[Lights.findIndex((obj) => obj.name === LightName)];
 			Helper.ReportingInfo("Debug", "Adapter", `CurrentLight: ${JSON.stringify(CurrLight)}`);
 			if (ChangedProperty === "effect") {
-				CurrLight.effect === state.val;
+				Lights[Lights.findIndex((obj) => obj.name === LightName)].effect === state.val;
 				if (CurrLight.active === true) {
 					// CHANGE EFFECT
 				}
@@ -255,7 +255,7 @@ class Lighteffects extends utils.Adapter {
 							break;
 					}
 				} else {
-					CurrLight.active = false;
+					Lights[Lights.findIndex((obj) => obj.name === LightName)].active = false;
 				}
 			}
 		} else {
@@ -272,7 +272,7 @@ class Lighteffects extends utils.Adapter {
 	// Simple effect: Set color, switch brightness from 1 to 100 three times, handle poweroff behaviour
 	private async effectNotify(Light: Light, Color: string): Promise<void> {
 		Helper.ReportingInfo("Info", "effectAlarm", `Effect alarm for ${Light.name}`);
-		Light.active = true;
+		Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
 		await this.saveCurrentValues(Light);
 		// Set transition time to 0
 		await this.setForeignStateAsync(Light.transition, 0);
@@ -304,7 +304,7 @@ class Lighteffects extends utils.Adapter {
 				break;
 			}
 		}
-		Light.active = false;
+		Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = false;
 		await this.setStateAsync(Light.name + "." + "state", false);
 	}
 	//#endregion

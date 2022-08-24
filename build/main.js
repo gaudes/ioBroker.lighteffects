@@ -185,7 +185,7 @@ class Lighteffects extends utils.Adapter {
       const CurrLight = Lights[Lights.findIndex((obj) => obj.name === LightName)];
       Helper.ReportingInfo("Debug", "Adapter", `CurrentLight: ${JSON.stringify(CurrLight)}`);
       if (ChangedProperty === "effect") {
-        CurrLight.effect === state.val;
+        Lights[Lights.findIndex((obj) => obj.name === LightName)].effect === state.val;
         if (CurrLight.active === true) {
         }
       }
@@ -203,7 +203,7 @@ class Lighteffects extends utils.Adapter {
               break;
           }
         } else {
-          CurrLight.active = false;
+          Lights[Lights.findIndex((obj) => obj.name === LightName)].active = false;
         }
       }
     } else {
@@ -212,7 +212,7 @@ class Lighteffects extends utils.Adapter {
   }
   async effectNotify(Light, Color) {
     Helper.ReportingInfo("Info", "effectAlarm", `Effect alarm for ${Light.name}`);
-    Light.active = true;
+    Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
     await this.saveCurrentValues(Light);
     await this.setForeignStateAsync(Light.transition, 0);
     await this.setForeignStateAsync(Light.color, Color);
@@ -237,7 +237,7 @@ class Lighteffects extends utils.Adapter {
         break;
       }
     }
-    Light.active = false;
+    Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = false;
     await this.setStateAsync(Light.name + ".state", false);
   }
   async saveCurrentValues(Light) {
