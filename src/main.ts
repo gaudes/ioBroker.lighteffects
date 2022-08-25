@@ -254,21 +254,27 @@ class Lighteffects extends utils.Adapter {
 			if (ChangedProperty === "state") {
 				// Enable effect
 				if (state.val === true) {
-					this.effectNotify(
-						CurrLight,
-						this.config.notification[
-							this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
-						].color,
-						this.config.notification[
-							this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
-						].brightLow,
-						this.config.notification[
-							this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
-						].brightHigh,
-						this.config.notification[
-							this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
-						].pulse,
-					);
+					switch (CurrLight.effect) {
+						case "color":
+							this.effectColor(CurrLight);
+							break;
+						default:
+							this.effectNotify(
+								CurrLight,
+								this.config.notification[
+									this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
+								].color,
+								this.config.notification[
+									this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
+								].brightLow,
+								this.config.notification[
+									this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
+								].brightHigh,
+								this.config.notification[
+									this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
+								].pulse,
+							);
+					}
 				} else {
 					Lights[Lights.findIndex((obj) => obj.name == LightName)].active = false;
 				}
