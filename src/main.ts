@@ -15,6 +15,7 @@ interface Light {
 	state: string;
 	brightness: string;
 	color: string;
+	colortemp: string;
 	transition: string;
 	effect: string;
 	disabling: string;
@@ -23,6 +24,8 @@ interface Light {
 	currentstate: boolean | null;
 	currentbrightness: number | null;
 	currentcolor: string | null;
+	currentcolortemp: string | null;
+	currentsetting: string;
 	currenttransition: number | null;
 }
 
@@ -63,6 +66,7 @@ class Lighteffects extends utils.Adapter {
 					state: cLight.state,
 					brightness: cLight.brightness,
 					color: cLight.color,
+					colortemp: "",
 					transition: cLight.transition,
 					effect: cLight.effect,
 					disabling: cLight.disabling,
@@ -71,6 +75,8 @@ class Lighteffects extends utils.Adapter {
 					currentstate: null,
 					currentbrightness: null,
 					currentcolor: null,
+					currentcolortemp: null,
+					currentsetting: "color",
 					currenttransition: null,
 				});
 
@@ -248,17 +254,21 @@ class Lighteffects extends utils.Adapter {
 			if (ChangedProperty === "state") {
 				// Enable effect
 				if (state.val === true) {
-					switch (CurrLight.effect) {
-						case "notifyAlarm":
-							this.effectNotify(CurrLight, "red");
-							break;
-						case "notifyInfo":
-							this.effectNotify(CurrLight, "blue");
-							break;
-						case "notifyWarn":
-							this.effectNotify(CurrLight, "orange");
-							break;
-					}
+					this.effectNotify(
+						CurrLight,
+						this.config.notification[
+							this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
+						].color,
+						this.config.notification[
+							this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
+						].brightLow,
+						this.config.notification[
+							this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
+						].brightHigh,
+						this.config.notification[
+							this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)
+						].pulse,
+					);
 				} else {
 					Lights[Lights.findIndex((obj) => obj.name == LightName)].active = false;
 				}
@@ -273,10 +283,16 @@ class Lighteffects extends utils.Adapter {
 
 	//#region Effect Functions
 
-	//#region Effect Alarm
+	//#region Effect Notify
 	// Simple effect: Set color, switch brightness from 1 to 100 three times, handle poweroff behaviour
-	private async effectNotify(Light: Light, Color: string): Promise<void> {
-		Helper.ReportingInfo("Info", "effectAlarm", `Effect alarm for ${Light.name}`);
+	private async effectNotify(
+		Light: Light,
+		Color: string,
+		BrightLow: number,
+		BrightHigh: number,
+		Pulse: number,
+	): Promise<void> {
+		Helper.ReportingInfo("Info", "effectNotify", `Effect notify for ${Light.name}`);
 		Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
 		await this.saveCurrentValues(Light);
 		// Set transition time to 0
@@ -285,13 +301,13 @@ class Lighteffects extends utils.Adapter {
 		await this.setForeignStateAsync(Light.color, Color);
 		// Power on
 		await this.setForeignStateAsync(Light.state, true);
-		for (let i = 0; i < 4; i++) {
+		for (let i = 1; i < Pulse; i++) {
 			// Set brightness to 100%
-			await this.setForeignStateAsync(Light.brightness, 100);
+			await this.setForeignStateAsync(Light.brightness, BrightHigh);
 			// Sleep 1s
 			await new Promise((f) => setTimeout(f, 1000));
 			// Set brightness to 1%
-			await this.setForeignStateAsync(Light.brightness, 1);
+			await this.setForeignStateAsync(Light.brightness, BrightLow);
 			// Sleep 1s
 			await new Promise((f) => setTimeout(f, 1000));
 		}
@@ -340,10 +356,28 @@ class Lighteffects extends utils.Adapter {
 		}
 		// Save color
 		const CurrColor = await this.getForeignStateAsync(Light.color);
+		let CurrColorTime = 0;
 		if (CurrColor!.val !== null && CurrColor!.val !== "undefined" && typeof CurrColor!.val === "string") {
+			CurrColorTime = CurrColor?.ts || 0;
 			Light.currentcolor = CurrColor!.val;
 		} else {
 			Light.currentcolor = "white";
+		}
+		// Save colortemp (if defined)
+		if (Light.colortemp !== null && Light.colortemp !== "") {
+			const CurrColorTemp = await this.getForeignStateAsync(Light.colortemp);
+			if (
+				CurrColorTemp!.val !== null &&
+				CurrColorTemp!.val !== "undefined" &&
+				typeof CurrColorTemp!.val === "string"
+			) {
+				Light.currentcolortemp = CurrColorTemp!.val;
+				if (typeof CurrColorTemp?.ts === "number" && CurrColorTemp?.ts > CurrColorTime) {
+					Light.currentsetting = "colortemp";
+				}
+			} else {
+				Light.currentcolortemp = "white";
+			}
 		}
 		// Save transition time
 		const CurrTransition = await this.getForeignStateAsync(Light.transition);
@@ -370,7 +404,11 @@ class Lighteffects extends utils.Adapter {
 		);
 		await this.setForeignStateAsync(Light.brightness, Light.currentbrightness);
 		await this.setForeignStateAsync(Light.state, Light.currentstate);
-		await this.setForeignStateAsync(Light.color, Light.currentcolor);
+		if (Light.currentsetting === "color") {
+			await this.setForeignStateAsync(Light.color, Light.currentcolor);
+		} else {
+			await this.setForeignStateAsync(Light.colortemp, Light.currentcolortemp);
+		}
 		await this.setForeignStateAsync(Light.transition, Light.currenttransition);
 	}
 	//#endregion

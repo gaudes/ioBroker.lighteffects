@@ -1,7 +1,10 @@
 {
     "SActive": "Actief",
+    "SBrightHigh": "Helderheid hoog",
+    "SBrightLow": "Helderheid laag",
     "SBrightness": "Helderheid",
     "SColor": "Kleur",
+    "SColorTemp": "ColorTemp (optioneel)",
     "SDisabling": "Deactiveringsgedrag",
     "SDisablingPowerOff": "Uitschakelen",
     "SDisablingPowerOffReset": "Uitschakelen met reset",
@@ -12,10 +15,13 @@
     "SEffectNotifyAlarm": "Meldingsalarm",
     "SEffectNotifyInfo": "Meldingsinfo",
     "SEffectNotifyWarn": "Meldingswaarschuwing",
+    "SLNotification": "Notificatie instellingen",
     "SName": "Naam",
+    "SPulse": "Puls",
     "SState": "Staat",
     "STabEffects": "Effectinstellingen",
     "STabLights": "Lichten",
     "STransition": "Overgangstijd",
-    "lighteffects adapter settings": "Adapterinstellingen voor lighteffects"
+    "lighteffects adapter settings": "Adapterinstellingen voor lighteffects",
+    "SEffectNotification": "Notificatie instellingen"
 }

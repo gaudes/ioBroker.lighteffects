@@ -1,7 +1,10 @@
 {
     "SActive": "积极的",
+    "SBrightHigh": "亮度高",
+    "SBrightLow": "亮度低",
     "SBrightness": "亮度",
     "SColor": "颜色",
+    "SColorTemp": "颜色温度（可选）",
     "SDisabling": "停用行为",
     "SDisablingPowerOff": "关机",
     "SDisablingPowerOffReset": "断电复位",
@@ -12,10 +15,13 @@
     "SEffectNotifyAlarm": "通知警报",
     "SEffectNotifyInfo": "通知信息",
     "SEffectNotifyWarn": "通知警告",
+    "SLNotification": "通知设置",
     "SName": "姓名",
+    "SPulse": "脉冲",
     "SState": "状态",
     "STabEffects": "效果设置",
     "STabLights": "灯",
     "STransition": "过渡时间",
-    "lighteffects adapter settings": "lighteffects的适配器设置"
+    "lighteffects adapter settings": "lighteffects的适配器设置",
+    "SEffectNotification": "通知设置"
 }

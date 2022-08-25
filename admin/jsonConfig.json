@@ -56,6 +56,13 @@
 							"default": ""
 						},
 						{
+							"type": "objectId",
+							"attr": "colortemp",
+							"label": "SColorTemp",
+							"width": "10%",
+							"default": ""
+						},
+						{
 							"type": "select",
 							"attr": "effect",
 							"label": "SEffect",
@@ -112,7 +119,66 @@
 		"_effects": {
 			"type": "panel",
 			"label": "STabEffects",
-			"items": {}
+			"items": {
+				"notification": {
+					"type": "table",
+					"nodelete": true,
+					"sm": 12,
+					"md": 12,
+					"lg": 12,
+					"label": "SEffectNotification",
+					"items": [
+						{
+							"type": "text",
+							"attr": "type",
+							"readonly": true
+						},
+						{
+							"type": "color",
+							"attr": "color",
+							"label": "SColor"
+						},
+						{
+							"type": "number",
+							"attr": "brightLow",
+							"label": "SBrightLow",
+							"min": 1,
+							"max": 100,
+							"step": 1
+						},
+						{
+							"type": "number",
+							"attr": "brightHigh",
+							"label": "SBrightHigh",
+							"min": 1,
+							"max": 100,
+							"step": 1
+						},
+						{
+							"type": "number",
+							"attr": "pulse",
+							"label": "SPulse",
+							"min": 1,
+							"max": 10,
+							"step": 1
+						}
+					]
+				},
+				"colorfulColors": {
+					"type": "table",
+					"sm": 12,
+					"md": 12,
+					"lg": 12,
+					"label": "SEffectColor",
+					"items": [
+						{
+							"type": "color",
+							"attr": "color",
+							"label": "SColor"
+						}
+					]
+				}
+			}
 		}
 	}
 }

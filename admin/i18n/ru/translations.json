@@ -1,7 +1,10 @@
 {
     "SActive": "Активный",
+    "SBrightHigh": "Яркость высокая",
+    "SBrightLow": "Яркость низкая",
     "SBrightness": "Яркость",
     "SColor": "Цвет",
+    "SColorTemp": "Цветовая температура (необязательно)",
     "SDisabling": "Поведение при деактивации",
     "SDisablingPowerOff": "Выключение",
     "SDisablingPowerOffReset": "Выключение со сбросом",
@@ -12,10 +15,13 @@
     "SEffectNotifyAlarm": "Уведомление о тревоге",
     "SEffectNotifyInfo": "Информация об уведомлении",
     "SEffectNotifyWarn": "Уведомление Предупреждение",
+    "SLNotification": "Настройки уведомлений",
     "SName": "Имя",
+    "SPulse": "Пульс",
     "SState": "Состояние",
     "STabEffects": "Настройки эффектов",
     "STabLights": "Огни",
     "STransition": "Время перехода",
-    "lighteffects adapter settings": "Настройки адаптера для lighteffects"
+    "lighteffects adapter settings": "Настройки адаптера для lighteffects",
+    "SEffectNotification": "Настройки уведомлений"
 }

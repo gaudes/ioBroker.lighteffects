@@ -1,7 +1,10 @@
 {
     "SActive": "Ativo",
+    "SBrightHigh": "Alto brilho",
+    "SBrightLow": "Brilho baixo",
     "SBrightness": "Brilho",
     "SColor": "Cor",
+    "SColorTemp": "ColorTemp (opcional)",
     "SDisabling": "Comportamento de Desativação",
     "SDisablingPowerOff": "Desligar",
     "SDisablingPowerOffReset": "Desligar com reset",
@@ -12,10 +15,13 @@
     "SEffectNotifyAlarm": "Alarme de notificação",
     "SEffectNotifyInfo": "Informações de notificação",
     "SEffectNotifyWarn": "Aviso de notificação",
+    "SLNotification": "Configurações de notificação",
     "SName": "Nome",
+    "SPulse": "Pulso",
     "SState": "Estado",
     "STabEffects": "Configurações de efeito",
     "STabLights": "Luzes",
     "STransition": "Período de transição",
-    "lighteffects adapter settings": "Configurações do adaptador para lighteffects"
+    "lighteffects adapter settings": "Configurações do adaptador para lighteffects",
+    "SEffectNotification": "Configurações de notificação"
 }

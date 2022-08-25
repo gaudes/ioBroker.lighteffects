@@ -17,12 +17,28 @@ declare global {
 					state: string;
 					brightness: string;
 					color: string;
+					colortemp: string;
 					transition: string;
 					effect: string;
 					disabling: string;
 				},
 			];
 			sentry_disable: boolean;
+			notification: [
+				{
+					type: string;
+					typeInternal: "string";
+					color: string;
+					brightLow: number;
+					brightHigh: number;
+					pulse: number;
+				},
+			];
+			colorfulColors: [
+				{
+					color: string;
+				},
+			];
 		}
 	}
 }
