@@ -194,35 +194,13 @@ class Lighteffects extends utils.Adapter {
       }
       if (ChangedProperty === "state") {
         if (state.val === true) {
-          switch (CurrLight.effect) {
-            case "notifyAlarm":
-              this.effectNotify(
-                CurrLight,
-                this.config.notificationAlarmColor,
-                this.config.notificationAlarmBrightLow,
-                this.config.notificationAlarmBrightHigh,
-                this.config.notificationAlarmPulse
-              );
-              break;
-            case "notifyInfo":
-              this.effectNotify(
-                CurrLight,
-                this.config.notificationInfoColor,
-                this.config.notificationInfoBrightLow,
-                this.config.notificationInfoBrightHigh,
-                this.config.notificationInfoPulse
-              );
-              break;
-            case "notifyWarn":
-              this.effectNotify(
-                CurrLight,
-                this.config.notificationWarnColor,
-                this.config.notificationWarnBrightLow,
-                this.config.notificationWarnBrightHigh,
-                this.config.notificationWarnPulse
-              );
-              break;
-          }
+          this.effectNotify(
+            CurrLight,
+            this.config.notification[this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)].color,
+            this.config.notification[this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)].brightLow,
+            this.config.notification[this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)].brightHigh,
+            this.config.notification[this.config.notification.findIndex((obj) => obj.typeInternal == CurrLight.effect)].pulse
+          );
         } else {
           Lights[Lights.findIndex((obj) => obj.name == LightName)].active = false;
         }
@@ -232,7 +210,7 @@ class Lighteffects extends utils.Adapter {
     }
   }
   async effectNotify(Light, Color, BrightLow, BrightHigh, Pulse) {
-    Helper.ReportingInfo("Info", "effectAlarm", `Effect alarm for ${Light.name}`);
+    Helper.ReportingInfo("Info", "effectNotify", `Effect notify for ${Light.name}`);
     Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
     await this.saveCurrentValues(Light);
     await this.setForeignStateAsync(Light.transition, 0);
