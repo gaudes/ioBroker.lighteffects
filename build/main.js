@@ -240,6 +240,37 @@ class Lighteffects extends utils.Adapter {
     Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = false;
     await this.setStateAsync(Light.name + ".state", false);
   }
+  async effectColor(Light) {
+    Helper.ReportingInfo("Info", "effectColor", `Effect color for ${Light.name}`);
+    Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
+    await this.saveCurrentValues(Light);
+    await this.setForeignStateAsync(Light.transition, 10);
+    await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
+    await this.setForeignStateAsync(Light.state, true);
+    while (Light.active === true) {
+      for (let i = 1; i < this.config.colorfulColors.length; i++) {
+        await new Promise((f) => setTimeout(f, 3e4));
+        await this.setForeignStateAsync(Light.color, this.config.colorfulColors[i].color);
+      }
+      await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
+    }
+    switch (Light.disabling) {
+      case "Reset": {
+        await this.restoreCurrentValues(Light);
+        break;
+      }
+      case "PowerOffRestore": {
+        await this.restoreCurrentValues(Light);
+        await this.setForeignStateAsync(Light.state, false);
+        break;
+      }
+      default: {
+        await this.setForeignStateAsync(Light.state, false);
+        break;
+      }
+    }
+    Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = false;
+  }
   async saveCurrentValues(Light) {
     Helper.ReportingInfo("Debug", "saveCurrentValues", `Save current values for ${Light.name}`);
     const CurrState = await this.getForeignStateAsync(Light.state);
