@@ -395,7 +395,7 @@ class Lighteffects extends utils.Adapter {
 	// Effect: Set candle colors as defined in an infinit loop, handle poweroff behaviour
 	private async effectCandle(Light: Light): Promise<void> {
 		function getRandomColor(): string {
-			return "#" + ((1 << 24) + (255 << 16) + (Math.floor(Math.random() * 256) << 8) + 0).toString(16).slice(1);
+			return "#" + ((1 << 24) + (255 << 16) + (Math.floor(Math.random() * 201) << 8) + 0).toString(16).slice(1);
 		}
 		Helper.ReportingInfo("Info", "effectCandle", `Effect candle for ${Light.name}`);
 		Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
