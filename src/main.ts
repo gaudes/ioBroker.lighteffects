@@ -258,6 +258,9 @@ class Lighteffects extends utils.Adapter {
 						case "color":
 							this.effectColor(CurrLight);
 							break;
+						case "candle":
+							this.effectCandle(CurrLight);
+							break;
 						default:
 							this.effectNotify(
 								CurrLight,
@@ -367,6 +370,50 @@ class Lighteffects extends utils.Adapter {
 			}
 			if (Light.active === true) {
 				await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
+			}
+		}
+		switch (Light.disabling) {
+			case "Reset": {
+				await this.restoreCurrentValues(Light);
+				break;
+			}
+			case "PowerOffRestore": {
+				await this.restoreCurrentValues(Light);
+				await this.setForeignStateAsync(Light.state, false);
+				break;
+			}
+			default: {
+				await this.setForeignStateAsync(Light.state, false);
+				break;
+			}
+		}
+		Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = false;
+	}
+	//#endregion
+
+	//#region Effect Candle
+	// Effect: Set candle colors as defined in an infinit loop, handle poweroff behaviour
+	private async effectCandle(Light: Light): Promise<void> {
+		function getRandomColor(): string {
+			return "#" + ((1 << 24) + (255 << 16) + (Math.floor(Math.random() * 256) << 8) + 0).toString(16).slice(1);
+		}
+		Helper.ReportingInfo("Info", "effectCandle", `Effect candle for ${Light.name}`);
+		Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
+		await this.saveCurrentValues(Light);
+		// Set transition time to 0
+		await this.setForeignStateAsync(Light.transition, 0);
+		// Set color to initial color
+		await this.setForeignStateAsync(Light.color, getRandomColor());
+		// Power on
+		await this.setForeignStateAsync(Light.state, true);
+		while (Light.active === true) {
+			await new Promise((EffectTimeout) => {
+				return setTimeout(EffectTimeout, Math.floor(Math.random() * 1000));
+			});
+			if (Light.active === true) {
+				await this.setForeignStateAsync(Light.color, getRandomColor());
+			} else {
+				break;
 			}
 		}
 		switch (Light.disabling) {

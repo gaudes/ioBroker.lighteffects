@@ -199,6 +199,9 @@ class Lighteffects extends utils.Adapter {
             case "color":
               this.effectColor(CurrLight);
               break;
+            case "candle":
+              this.effectCandle(CurrLight);
+              break;
             default:
               this.effectNotify(
                 CurrLight,
@@ -272,6 +275,43 @@ class Lighteffects extends utils.Adapter {
       }
       if (Light.active === true) {
         await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
+      }
+    }
+    switch (Light.disabling) {
+      case "Reset": {
+        await this.restoreCurrentValues(Light);
+        break;
+      }
+      case "PowerOffRestore": {
+        await this.restoreCurrentValues(Light);
+        await this.setForeignStateAsync(Light.state, false);
+        break;
+      }
+      default: {
+        await this.setForeignStateAsync(Light.state, false);
+        break;
+      }
+    }
+    Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = false;
+  }
+  async effectCandle(Light) {
+    function getRandomColor() {
+      return "#" + ((1 << 24) + (255 << 16) + (Math.floor(Math.random() * 256) << 8) + 0).toString(16).slice(1);
+    }
+    Helper.ReportingInfo("Info", "effectCandle", `Effect candle for ${Light.name}`);
+    Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
+    await this.saveCurrentValues(Light);
+    await this.setForeignStateAsync(Light.transition, 0);
+    await this.setForeignStateAsync(Light.color, getRandomColor());
+    await this.setForeignStateAsync(Light.state, true);
+    while (Light.active === true) {
+      await new Promise((EffectTimeout) => {
+        return setTimeout(EffectTimeout, Math.floor(Math.random() * 1e3));
+      });
+      if (Light.active === true) {
+        await this.setForeignStateAsync(Light.color, getRandomColor());
+      } else {
+        break;
       }
     }
     switch (Light.disabling) {
