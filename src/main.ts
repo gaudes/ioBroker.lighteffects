@@ -352,7 +352,9 @@ class Lighteffects extends utils.Adapter {
 		await this.setForeignStateAsync(Light.state, true);
 		while (Light.active === true) {
 			for (let i = 1; i < this.config.colorfulColors.length; i++) {
-				await new Promise((EffectTimeout) => setTimeout(EffectTimeout, this.config.colorfulDuration * 1000)); // CONFIG
+				this.EffectTimeout = await new Promise((EffectTimeout) =>
+					setTimeout(EffectTimeout, this.config.colorfulDuration * 1000),
+				);
 				if (Light.active === true) {
 					await this.setForeignStateAsync(Light.color, this.config.colorfulColors[i].color);
 				} else {
