@@ -47,7 +47,7 @@ class Lighteffects extends utils.Adapter {
           state: cLight.state,
           brightness: cLight.brightness,
           color: cLight.color,
-          colortemp: "",
+          colortemp: cLight.colortemp,
           transition: cLight.transition,
           effect: cLight.effect,
           disabling: cLight.disabling,
