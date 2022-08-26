@@ -401,14 +401,14 @@ class Lighteffects extends utils.Adapter {
 		Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
 		await this.saveCurrentValues(Light);
 		// Set transition time to 0
-		await this.setForeignStateAsync(Light.transition, 0);
+		await this.setForeignStateAsync(Light.transition, 1);
 		// Set color to initial color
 		await this.setForeignStateAsync(Light.color, getRandomColor());
 		// Power on
 		await this.setForeignStateAsync(Light.state, true);
 		while (Light.active === true) {
 			await new Promise((EffectTimeout) => {
-				return setTimeout(EffectTimeout, Math.floor(Math.random() * (1000 - 200 + 1) + 200));
+				return setTimeout(EffectTimeout, Math.floor(Math.random() * (1000 - 200 + 1) + 200) + 1000);
 			});
 			if (Light.active === true) {
 				await this.setForeignStateAsync(Light.color, getRandomColor());

@@ -301,12 +301,12 @@ class Lighteffects extends utils.Adapter {
     Helper.ReportingInfo("Info", "effectCandle", `Effect candle for ${Light.name}`);
     Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
     await this.saveCurrentValues(Light);
-    await this.setForeignStateAsync(Light.transition, 0);
+    await this.setForeignStateAsync(Light.transition, 1);
     await this.setForeignStateAsync(Light.color, getRandomColor());
     await this.setForeignStateAsync(Light.state, true);
     while (Light.active === true) {
       await new Promise((EffectTimeout) => {
-        return setTimeout(EffectTimeout, Math.floor(Math.random() * (1e3 - 200 + 1) + 200));
+        return setTimeout(EffectTimeout, Math.floor(Math.random() * (1e3 - 200 + 1) + 200) + 1e3);
       });
       if (Light.active === true) {
         await this.setForeignStateAsync(Light.color, getRandomColor());
