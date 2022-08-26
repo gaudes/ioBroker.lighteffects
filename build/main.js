@@ -329,7 +329,7 @@ class Lighteffects extends utils.Adapter {
     Helper.ReportingInfo(
       "Debug",
       "restoreCurrentValues",
-      `Restore current values for ${Light.name} to brightness ${Light.currentbrightness}, color ${Light.currentcolor}, Transition ${Light.currenttransition}, State ${Light.currentstate}`
+      `Restore current values for ${Light.name} to brightness ${Light.currentbrightness}, color ${Light.currentcolor}, colortemp ${Light.currentcolortemp}, setting ${Light.currentsetting}, Transition ${Light.currenttransition}, State ${Light.currentstate}`
     );
     await this.setForeignStateAsync(Light.brightness, Light.currentbrightness);
     await this.setForeignStateAsync(Light.state, Light.currentstate);
