@@ -412,6 +412,14 @@ class Lighteffects extends utils.Adapter {
 			});
 			if (Light.active === true) {
 				await this.setForeignStateAsync(Light.color, getRandomColor());
+				let CurrBright = 100;
+				if (typeof Light.currentbrightness === "number") {
+					CurrBright = Light.currentbrightness;
+				}
+				await this.setForeignStateAsync(
+					Light.brightness,
+					Math.floor(Math.random() * (CurrBright - (CurrBright - 20) + 1) + (CurrBright - 20)),
+				);
 			} else {
 				break;
 			}
