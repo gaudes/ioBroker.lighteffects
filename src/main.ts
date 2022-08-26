@@ -24,7 +24,7 @@ interface Light {
 	currentstate: boolean | null;
 	currentbrightness: number | null;
 	currentcolor: string | null;
-	currentcolortemp: string | null;
+	currentcolortemp: number | null;
 	currentsetting: string;
 	currenttransition: number | null;
 }
@@ -420,14 +420,14 @@ class Lighteffects extends utils.Adapter {
 			if (
 				CurrColorTemp!.val !== null &&
 				CurrColorTemp!.val !== "undefined" &&
-				typeof CurrColorTemp!.val === "string"
+				typeof CurrColorTemp!.val === "number"
 			) {
 				Light.currentcolortemp = CurrColorTemp!.val;
 				if (typeof CurrColorTemp?.ts === "number" && CurrColorTemp?.ts > CurrColorTime) {
 					Light.currentsetting = "colortemp";
 				}
 			} else {
-				Light.currentcolortemp = "white";
+				Light.currentcolortemp = 350;
 			}
 		}
 		// Save transition time

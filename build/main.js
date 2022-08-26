@@ -309,13 +309,13 @@ class Lighteffects extends utils.Adapter {
     }
     if (Light.colortemp !== null && Light.colortemp !== "") {
       const CurrColorTemp = await this.getForeignStateAsync(Light.colortemp);
-      if (CurrColorTemp.val !== null && CurrColorTemp.val !== "undefined" && typeof CurrColorTemp.val === "string") {
+      if (CurrColorTemp.val !== null && CurrColorTemp.val !== "undefined" && typeof CurrColorTemp.val === "number") {
         Light.currentcolortemp = CurrColorTemp.val;
         if (typeof (CurrColorTemp == null ? void 0 : CurrColorTemp.ts) === "number" && (CurrColorTemp == null ? void 0 : CurrColorTemp.ts) > CurrColorTime) {
           Light.currentsetting = "colortemp";
         }
       } else {
-        Light.currentcolortemp = "white";
+        Light.currentcolortemp = 350;
       }
     }
     const CurrTransition = await this.getForeignStateAsync(Light.transition);
