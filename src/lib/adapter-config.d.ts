@@ -39,6 +39,8 @@ declare global {
 					color: string;
 				},
 			];
+			colorfulTransition: number;
+			colorfulDuration: number;
 		}
 	}
 }

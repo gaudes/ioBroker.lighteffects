@@ -9,9 +9,10 @@
     "SDisablingPowerOff": "关机",
     "SDisablingPowerOffReset": "断电复位",
     "SDisablingReset": "重置以前的设置",
+    "SDuration": "期间",
     "SEffect": "影响",
     "SEffectCandle": "蜡烛",
-    "SEffectColor": "丰富多彩的",
+    "SEffectNotification": "通知",
     "SEffectNotifyAlarm": "通知警报",
     "SEffectNotifyInfo": "通知信息",
     "SEffectNotifyWarn": "通知警告",
@@ -23,5 +24,5 @@
     "STabLights": "灯",
     "STransition": "过渡时间",
     "lighteffects adapter settings": "lighteffects的适配器设置",
-    "SEffectNotification": "通知设置"
+    "SEffectColor": "七彩效果"
 }

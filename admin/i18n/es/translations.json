@@ -9,9 +9,10 @@
     "SDisablingPowerOff": "Apagado",
     "SDisablingPowerOffReset": "Apagar con reinicio",
     "SDisablingReset": "Restablecer configuraciones anteriores",
+    "SDuration": "Duración",
     "SEffect": "Efecto",
     "SEffectCandle": "Vela",
-    "SEffectColor": "Vistoso",
+    "SEffectNotification": "Notificaciones",
     "SEffectNotifyAlarm": "Alarma de notificación",
     "SEffectNotifyInfo": "Información de notificación",
     "SEffectNotifyWarn": "Advertencia de notificación",
@@ -23,5 +24,5 @@
     "STabLights": "Luces",
     "STransition": "Tiempo de transición",
     "lighteffects adapter settings": "Ajustes del adaptador para lighteffects",
-    "SEffectNotification": "Configuración de las notificaciones"
+    "SEffectColor": "Efecto colorido"
 }

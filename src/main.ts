@@ -277,6 +277,7 @@ class Lighteffects extends utils.Adapter {
 					}
 				} else {
 					Lights[Lights.findIndex((obj) => obj.name == LightName)].active = false;
+					clearTimeout(this.EffectTimeout);
 				}
 			}
 		} else {
@@ -288,7 +289,7 @@ class Lighteffects extends utils.Adapter {
 	//#endregion
 
 	//#region Effect Functions
-
+	private EffectTimeout: any = null;
 	//#region Effect Notify
 	// Simple effect: Set color, switch brightness from 1 to 100 three times, handle poweroff behaviour
 	private async effectNotify(
@@ -344,17 +345,23 @@ class Lighteffects extends utils.Adapter {
 		Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
 		await this.saveCurrentValues(Light);
 		// Set transition time to 0
-		await this.setForeignStateAsync(Light.transition, 10); // CONFIG
+		await this.setForeignStateAsync(Light.transition, this.config.colorfulTransition);
 		// Set color to first color
 		await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
 		// Power on
 		await this.setForeignStateAsync(Light.state, true);
 		while (Light.active === true) {
 			for (let i = 1; i < this.config.colorfulColors.length; i++) {
-				await new Promise((f) => setTimeout(f, 30000)); // CONFIG
-				await this.setForeignStateAsync(Light.color, this.config.colorfulColors[i].color);
+				await new Promise((EffectTimeout) => setTimeout(EffectTimeout, this.config.colorfulDuration * 1000)); // CONFIG
+				if (Light.active === true) {
+					await this.setForeignStateAsync(Light.color, this.config.colorfulColors[i].color);
+				} else {
+					break;
+				}
 			}
-			await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
+			if (Light.active === true) {
+				await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
+			}
 		}
 		switch (Light.disabling) {
 			case "Reset": {

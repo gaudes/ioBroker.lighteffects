@@ -27,6 +27,7 @@ class Lighteffects extends utils.Adapter {
       ...options,
       name: "lighteffects"
     });
+    this.EffectTimeout = null;
     this.on("ready", this.onReady.bind(this));
     this.on("stateChange", this.onStateChange.bind(this));
     this.on("unload", this.onUnload.bind(this));
@@ -209,6 +210,7 @@ class Lighteffects extends utils.Adapter {
           }
         } else {
           Lights[Lights.findIndex((obj) => obj.name == LightName)].active = false;
+          clearTimeout(this.EffectTimeout);
         }
       }
     } else {
@@ -250,15 +252,21 @@ class Lighteffects extends utils.Adapter {
     Helper.ReportingInfo("Info", "effectColor", `Effect color for ${Light.name}`);
     Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
     await this.saveCurrentValues(Light);
-    await this.setForeignStateAsync(Light.transition, 10);
+    await this.setForeignStateAsync(Light.transition, this.config.colorfulTransition);
     await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
     await this.setForeignStateAsync(Light.state, true);
     while (Light.active === true) {
       for (let i = 1; i < this.config.colorfulColors.length; i++) {
-        await new Promise((f) => setTimeout(f, 3e4));
-        await this.setForeignStateAsync(Light.color, this.config.colorfulColors[i].color);
+        await new Promise((EffectTimeout) => setTimeout(EffectTimeout, this.config.colorfulDuration * 1e3));
+        if (Light.active === true) {
+          await this.setForeignStateAsync(Light.color, this.config.colorfulColors[i].color);
+        } else {
+          break;
+        }
       }
-      await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
+      if (Light.active === true) {
+        await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
+      }
     }
     switch (Light.disabling) {
       case "Reset": {

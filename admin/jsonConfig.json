@@ -120,63 +120,99 @@
 			"type": "panel",
 			"label": "STabEffects",
 			"items": {
-				"notification": {
-					"type": "table",
-					"nodelete": true,
+				"pnotification": {
+					"type": "panel",
+					"label": "SEffectNotification",
+					"collapsable": true,
 					"sm": 12,
 					"md": 12,
 					"lg": 12,
-					"label": "SEffectNotification",
-					"items": [
-						{
-							"type": "text",
-							"attr": "type",
-							"readonly": true
-						},
-						{
-							"type": "color",
-							"attr": "color",
-							"label": "SColor"
-						},
-						{
+					"xs": 12,
+					"items": {
+						"notification": {
+							"type": "table",
+							"nodelete": true,
+							"sm": 12,
+							"md": 12,
+							"lg": 12,
+							"items": [
+								{
+									"type": "text",
+									"attr": "type",
+									"readonly": true
+								},
+								{
+									"type": "color",
+									"attr": "color",
+									"label": "SColor"
+								},
+								{
+									"type": "number",
+									"attr": "brightLow",
+									"label": "SBrightLow",
+									"min": 1,
+									"max": 100,
+									"step": 1
+								},
+								{
+									"type": "number",
+									"attr": "brightHigh",
+									"label": "SBrightHigh",
+									"min": 1,
+									"max": 100,
+									"step": 1
+								},
+								{
+									"type": "number",
+									"attr": "pulse",
+									"label": "SPulse",
+									"min": 1,
+									"max": 10,
+									"step": 1
+								}
+							]
+						}
+					}
+				},
+				"pcolorful": {
+					"type": "panel",
+					"label": "SEffectColor",
+					"collapsable": true,
+					"sm": 12,
+					"md": 12,
+					"lg": 12,
+					"xs": 12,
+					"items": {
+						"transitiontime": {
 							"type": "number",
-							"attr": "brightLow",
-							"label": "SBrightLow",
-							"min": 1,
-							"max": 100,
-							"step": 1
-						},
-						{
-							"type": "number",
-							"attr": "brightHigh",
-							"label": "SBrightHigh",
-							"min": 1,
-							"max": 100,
-							"step": 1
-						},
-						{
-							"type": "number",
-							"attr": "pulse",
-							"label": "SPulse",
+							"attr": "colorfulTransition",
+							"label": "STransition",
 							"min": 1,
 							"max": 10,
 							"step": 1
+						},
+						"duration": {
+							"type": "number",
+							"attr": "colorfulDuration",
+							"label": "SDuration",
+							"min": 1,
+							"max": 6000,
+							"step": 1
+						},
+						"colorfulColors": {
+							"type": "table",
+							"sm": 12,
+							"md": 12,
+							"lg": 12,
+							"items": [
+								{
+									"type": "color",
+									"attr": "color",
+									"label": "SColor"
+								}
+							]
 						}
-					]
-				},
-				"colorfulColors": {
-					"type": "table",
-					"sm": 12,
-					"md": 12,
-					"lg": 12,
-					"label": "SEffectColor",
-					"items": [
-						{
-							"type": "color",
-							"attr": "color",
-							"label": "SColor"
-						}
-					]
+					}
 				}
 			}
 		}
