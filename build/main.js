@@ -306,7 +306,7 @@ class Lighteffects extends utils.Adapter {
     await this.setForeignStateAsync(Light.state, true);
     while (Light.active === true) {
       await new Promise((EffectTimeout) => {
-        return setTimeout(EffectTimeout, Math.floor(Math.random() * 1e3));
+        return setTimeout(EffectTimeout, Math.floor(Math.random() * (1e3 - 200 + 1) + 200));
       });
       if (Light.active === true) {
         await this.setForeignStateAsync(Light.color, getRandomColor());
