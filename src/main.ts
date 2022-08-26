@@ -418,7 +418,7 @@ class Lighteffects extends utils.Adapter {
 				}
 				await this.setForeignStateAsync(
 					Light.brightness,
-					Math.floor(Math.random() * (CurrBright - (CurrBright - 20) + 1) + (CurrBright - 20)),
+					Math.floor(Math.random() * (CurrBright - CurrBright / 2 + 1) + CurrBright / 2),
 				);
 			} else {
 				break;
