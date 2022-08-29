@@ -459,12 +459,12 @@ class Lighteffects extends utils.Adapter {
 	private async effectColor(Light: Light): Promise<void> {
 		try {
 			Helper.ReportingInfo("Info", "effectColor", `Effect color for ${Light.name}`);
-			// Set transition time to desired value
-			await this.setForeignStateAsync(Light.transition, this.config.colorfulTransition);
 			// Set color to first color
 			await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
 			// Power on
 			await this.setForeignStateAsync(Light.state, true);
+			// Set transition time to desired value
+			await this.setForeignStateAsync(Light.transition, this.config.colorfulTransition);
 			while (Light.stoplightby === null) {
 				for (let i = 1; i < this.config.colorfulColors.length; i++) {
 					for (let j = 1; j < this.config.colorfulDuration; j++) {
