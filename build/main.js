@@ -248,6 +248,7 @@ class Lighteffects extends utils.Adapter {
         if (ChangedProperty === "state") {
           if (state.val === true) {
             Lights[Lights.findIndex((obj) => obj.name == LightName)].stoplightby = null;
+            this.effectRun(Light);
           } else {
             Lights[Lights.findIndex((obj) => obj.name == LightName)].stoplightby = 0 /* StopEffect */;
             Lights[Lights.findIndex((obj) => obj.name == LightName)].effectPrevious = null;
@@ -261,6 +262,7 @@ class Lighteffects extends utils.Adapter {
     }
   }
   async effectRun(Light) {
+    Helper.ReportingInfo("Debug", "effectRun", `Run effect for ${Light.name}`);
     if (Light.effectPrevious === null) {
       await this.saveCurrentValues(Light);
     }

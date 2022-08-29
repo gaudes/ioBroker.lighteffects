@@ -349,6 +349,7 @@ class Lighteffects extends utils.Adapter {
 
 	//#region Base Effect Function
 	private async effectRun(Light: Light): Promise<void> {
+		Helper.ReportingInfo("Debug", "effectRun", `Run effect for ${Light.name}`);
 		// Store current settings if no effect running
 		if (Light.effectPrevious === null) {
 			await this.saveCurrentValues(Light);
