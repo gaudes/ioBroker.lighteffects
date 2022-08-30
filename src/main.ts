@@ -408,6 +408,7 @@ class Lighteffects extends utils.Adapter {
 
 	private async effectStop(Light: Light): Promise<void> {
 		Helper.ReportingInfo("Debug", "effectStop", `Stop effect for ${Light.name} with ${JSON.stringify(Light)}`);
+		Light.active = false;
 		switch (Light.stoplightby) {
 			// Stop by Poweroff: When Reset or PowerOffRestore Reset and Poweroff
 			case StopLightBy.PowerOff:
