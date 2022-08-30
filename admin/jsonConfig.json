@@ -131,7 +131,7 @@
 					"items": {
 						"notification": {
 							"type": "table",
-							"nodelete": true,
+							"noDelete": true,
 							"sm": 12,
 							"md": 12,
 							"lg": 12,
@@ -139,7 +139,7 @@
 								{
 									"type": "text",
 									"attr": "type",
-									"readonly": true
+									"readOnly": true
 								},
 								{
 									"type": "color",

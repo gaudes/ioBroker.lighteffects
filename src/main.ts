@@ -12,7 +12,7 @@ let Helper: GlobalHelper;
 enum StopLightBy {
 	"StopEffect",
 	"PowerOff",
-	"SwitchNotify",
+	"SwitchEffect",
 }
 
 interface Light {
@@ -23,10 +23,11 @@ interface Light {
 	color: string;
 	colortemp: string;
 	transition: string;
-	effect: string;
+	defaulteffect: string;
 	disabling: string;
 	verified: boolean;
 	active: boolean;
+	currenteffect: string;
 	effectPrevious: string | null;
 	currentstate: boolean | null;
 	currentbrightness: number | null;
@@ -87,10 +88,11 @@ class Lighteffects extends utils.Adapter {
 						color: cLight.color,
 						colortemp: cLight.colortemp,
 						transition: cLight.transition,
-						effect: cLight.effect,
+						defaulteffect: cLight.effect,
 						disabling: cLight.disabling,
 						verified: false,
 						active: false,
+						currenteffect: cLight.effect,
 						effectPrevious: null,
 						currentstate: null,
 						currentbrightness: null,
@@ -247,6 +249,8 @@ class Lighteffects extends utils.Adapter {
 					await this.setStateAsync(cLight.name + "." + "effect", cLight.effect);
 					this.subscribeStates(cLight.name + "." + "state");
 					this.subscribeStates(cLight.name + "." + "effect");
+					// Subscribe foreign state for poweroff events
+					this.subscribeForeignStates(cLight.state);
 				} catch (err) {
 					Helper.ReportingError(err as Error, MsgErrUnknown, "onReady/LightCleanupSubscribe");
 				}
@@ -294,44 +298,53 @@ class Lighteffects extends utils.Adapter {
 	private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
 		try {
 			if (state) {
-				Helper.ReportingInfo("Debug", "Adapter", `state ${id} changed: ${state.val} (ack = ${state.ack})`);
-				// Get Name of Config Light
-				const LightName = id.split(".")[2];
-				// Get object name for light
-				const ChangedProperty = id.split(".")[3];
-				// Read internal light to variable
-				const Light = Lights[Lights.findIndex((obj) => obj.name == LightName)];
-				Helper.ReportingInfo("Debug", "Adapter", `CurrentLight: ${JSON.stringify(Light)}`);
-				// Effect changed
-				if (
-					ChangedProperty === "effect" &&
-					state.val !== null &&
-					state.val !== "undefined" &&
-					typeof state.val === "string"
-				) {
-					// Save previous effect for Notify
-					if (Light.active === true) {
-						// Save previous effect (Then don't save current-values and used after notify)
-						Lights[Lights.findIndex((obj) => obj.name == LightName)].effectPrevious = Light.effect;
-						Lights[Lights.findIndex((obj) => obj.name == LightName)].effect = state.val;
-						// TODO
-
-						/*
-						Lights[Lights.findIndex((obj) => obj.name == LightName)].active = false;
-						EffectResetTimeout = setTimeout(() => {
-							Lights[Lights.findIndex((obj) => obj.name == LightName)].active = true;
-						}, 1000);
-						*/
+				Helper.ReportingInfo(
+					"Debug",
+					"onStateChange",
+					`state ${id} changed: ${state.val} (ack = ${state.ack})`,
+				);
+				// Own states
+				if (id.startsWith(this.name + "." + this.instance)) {
+					// Get Name of Config Light
+					const LightName = id.split(".")[2];
+					// Get object name for light
+					const ChangedProperty = id.split(".")[3];
+					// Read internal light to variable
+					const Light = Lights[Lights.findIndex((obj) => obj.name == LightName)];
+					Helper.ReportingInfo("Debug", "onStateChange", `CurrentLight: ${JSON.stringify(Light)}`);
+					// Effect changed
+					if (
+						ChangedProperty === "effect" &&
+						state.val !== null &&
+						state.val !== "undefined" &&
+						typeof state.val === "string"
+					) {
+						if (Light.active === true) {
+							// Save previous effect (Then don't save current-values and used after notify)
+							Lights[Lights.findIndex((obj) => obj.name == LightName)].effectPrevious =
+								Light.currenteffect;
+							Lights[Lights.findIndex((obj) => obj.name == LightName)].currenteffect = state.val;
+							this.effectRun(Light);
+						} else {
+							Lights[Lights.findIndex((obj) => obj.name == LightName)].currenteffect = state.val;
+						}
 					}
-				}
-				if (ChangedProperty === "state") {
-					// Enable effect
-					if (state.val === true) {
-						Lights[Lights.findIndex((obj) => obj.name == LightName)].stoplightby = null;
-						this.effectRun(Light);
-					} else {
-						Lights[Lights.findIndex((obj) => obj.name == LightName)].stoplightby = StopLightBy.StopEffect;
-						Lights[Lights.findIndex((obj) => obj.name == LightName)].effectPrevious = null;
+					if (ChangedProperty === "state") {
+						// Enable effect
+						if (state.val === true) {
+							Lights[Lights.findIndex((obj) => obj.name == LightName)].stoplightby = null;
+							this.effectRun(Light);
+						} else {
+							Lights[Lights.findIndex((obj) => obj.name == LightName)].stoplightby =
+								StopLightBy.StopEffect;
+							Lights[Lights.findIndex((obj) => obj.name == LightName)].effectPrevious = null;
+						}
+					}
+				} else {
+					// Foreign state, check if powered off and effect running
+					if (state.val === false && Lights[Lights.findIndex((obj) => obj.state == id)].active === true) {
+						Lights[Lights.findIndex((obj) => obj.state == id)].stoplightby = StopLightBy.PowerOff;
+						Lights[Lights.findIndex((obj) => obj.state == id)].effectPrevious = null;
 					}
 				}
 			} else {
@@ -349,19 +362,25 @@ class Lighteffects extends utils.Adapter {
 
 	//#region Base Effect Function
 	private async effectRun(Light: Light): Promise<void> {
-		Helper.ReportingInfo("Debug", "effectRun", `Run effect for ${Light.name}`);
+		Helper.ReportingInfo("Debug", "effectRun", `Run effect for ${Light.name} with ${JSON.stringify(Light)}`);
 		// Store current settings if no effect running
 		if (Light.effectPrevious === null) {
+			Helper.ReportingInfo("Debug", "effectRun", `Save current values for ${Light.name}`);
 			await this.saveCurrentValues(Light);
 		}
 		// When effect already running
 		if (Light.active === true && Light.effectPrevious !== null) {
-			//TODO: Stop effect without reset or poweroff
+			Helper.ReportingInfo("Debug", "effectRun", `Stop current effect for ${Light.name}`);
+			// Stop current effect
+			Light.stoplightby = StopLightBy.SwitchEffect;
+			// Sleep 1000
+			await new Promise((EffectTimeout) => setTimeout(EffectTimeout, 1000));
+			Light.stoplightby = null;
 		}
 		// Set internal Light active
 		Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;
 		// Execute effect
-		switch (Light.effect) {
+		switch (Light.currenteffect) {
 			case "color":
 				this.effectColor(Light);
 				break;
@@ -372,28 +391,32 @@ class Lighteffects extends utils.Adapter {
 				this.effectNotify(
 					Light,
 					this.config.notification[
-						this.config.notification.findIndex((obj) => obj.typeInternal == Light.effect)
+						this.config.notification.findIndex((obj) => obj.typeInternal == Light.currenteffect)
 					].color,
 					this.config.notification[
-						this.config.notification.findIndex((obj) => obj.typeInternal == Light.effect)
+						this.config.notification.findIndex((obj) => obj.typeInternal == Light.currenteffect)
 					].brightLow,
 					this.config.notification[
-						this.config.notification.findIndex((obj) => obj.typeInternal == Light.effect)
+						this.config.notification.findIndex((obj) => obj.typeInternal == Light.currenteffect)
 					].brightHigh,
 					this.config.notification[
-						this.config.notification.findIndex((obj) => obj.typeInternal == Light.effect)
+						this.config.notification.findIndex((obj) => obj.typeInternal == Light.currenteffect)
 					].pulse,
 				);
 		}
 	}
 
 	private async effectStop(Light: Light): Promise<void> {
+		Helper.ReportingInfo("Debug", "effectStop", `Stop effect for ${Light.name} with ${JSON.stringify(Light)}`);
 		switch (Light.stoplightby) {
 			// Stop by Poweroff: When Reset or PowerOffRestore Reset and Poweroff
 			case StopLightBy.PowerOff:
-				if (Light.disabling === "Reset" || Light.disabling === "PowerOffRestore") {
+				if (Light.disabling === "Reset" || Light.disabling === "PowerOffReset") {
+					Helper.ReportingInfo("Debug", "effectStop", `Stopped by PowerOff  event for ${Light.name}`);
 					await this.restoreCurrentValues(Light);
 					await this.setForeignStateAsync(Light.state, false);
+					await this.setStateAsync(Light.name + "." + "state", false);
+					await this.setStateAsync(Light.name + "." + "effect", Light.defaulteffect);
 				}
 				break;
 			// Stop by StopEffect
@@ -418,6 +441,7 @@ class Lighteffects extends utils.Adapter {
 			default:
 				break;
 		}
+		Lights[Lights.findIndex((obj) => obj.name === Light.name)].stoplightby = null;
 		Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = false;
 	}
 
@@ -431,7 +455,11 @@ class Lighteffects extends utils.Adapter {
 		Pulse: number,
 	): Promise<void> {
 		try {
-			Helper.ReportingInfo("Info", "effectNotify", `Effect notify for ${Light.name}`);
+			Helper.ReportingInfo(
+				"Debug",
+				"effectNotify",
+				`Effect notify for ${Light.name} with ${JSON.stringify(Light)}`,
+			);
 			// Set transition time to 0
 			await this.setForeignStateAsync(Light.transition, 0);
 			// Set color to red
@@ -448,6 +476,9 @@ class Lighteffects extends utils.Adapter {
 				// Sleep 1s
 				await new Promise((f) => setTimeout(f, 1000));
 			}
+			const effectPrevious = Light.effectPrevious;
+			Light.effectPrevious = null;
+			await this.setStateAsync(Light.name + "." + "effect", effectPrevious);
 		} catch (err) {
 			Helper.ReportingError(err as Error, MsgErrUnknown, "effectNotify");
 		}
@@ -458,7 +489,11 @@ class Lighteffects extends utils.Adapter {
 	// Effect: Set color as defined in an infinit loop, handle poweroff behaviour
 	private async effectColor(Light: Light): Promise<void> {
 		try {
-			Helper.ReportingInfo("Info", "effectColor", `Effect color for ${Light.name}`);
+			Helper.ReportingInfo(
+				"Debug",
+				"effectColor",
+				`Effect color for ${Light.name} with ${JSON.stringify(Light)}`,
+			);
 			// Set color to first color
 			await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
 			// Power on
@@ -484,7 +519,7 @@ class Lighteffects extends utils.Adapter {
 					await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
 				}
 			}
-			this.effectStop(Light);
+			this.effectStop(Lights[Lights.findIndex((obj) => obj.name === Light.name)]);
 		} catch (err) {
 			Helper.ReportingError(err as Error, MsgErrUnknown, "effectColor");
 		}
@@ -498,7 +533,11 @@ class Lighteffects extends utils.Adapter {
 			return "#" + ((1 << 24) + (255 << 16) + (Math.floor(Math.random() * 201) << 8) + 0).toString(16).slice(1);
 		}
 		try {
-			Helper.ReportingInfo("Info", "effectCandle", `Effect candle for ${Light.name}`);
+			Helper.ReportingInfo(
+				"Debug",
+				"effectCandle",
+				`Effect candle for ${Light.name} with ${JSON.stringify(Light)}`,
+			);
 			// Set transition time to 1
 			await this.setForeignStateAsync(Light.transition, 1);
 			// Set color to initial color
@@ -523,7 +562,7 @@ class Lighteffects extends utils.Adapter {
 					break;
 				}
 			}
-			this.effectStop(Light);
+			this.effectStop(Lights[Lights.findIndex((obj) => obj.name === Light.name)]);
 		} catch (err) {
 			Helper.ReportingError(err as Error, MsgErrUnknown, "effectCandle");
 		}
