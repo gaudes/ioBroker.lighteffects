@@ -350,6 +350,7 @@ class Lighteffects extends utils.Adapter {
     Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = false;
   }
   async effectNotify(Light, Color, BrightLow, BrightHigh, Pulse) {
+    var _a;
     try {
       Helper.ReportingInfo(
         "Debug",
@@ -358,7 +359,9 @@ class Lighteffects extends utils.Adapter {
       );
       await this.setForeignStateAsync(Light.transition, 0);
       await this.setForeignStateAsync(Light.color, Color);
-      await this.setForeignStateAsync(Light.state, true);
+      if (((_a = await this.getForeignStateAsync(Light.state)) == null ? void 0 : _a.val) !== true) {
+        await this.setForeignStateAsync(Light.state, true);
+      }
       for (let i = 0; i < Pulse; i++) {
         await this.setForeignStateAsync(Light.brightness, BrightHigh);
         await new Promise((f) => setTimeout(f, 1e3));
@@ -378,6 +381,7 @@ class Lighteffects extends utils.Adapter {
     }
   }
   async effectColor(Light) {
+    var _a;
     try {
       Helper.ReportingInfo(
         "Debug",
@@ -385,7 +389,9 @@ class Lighteffects extends utils.Adapter {
         `Effect color for ${Light.name} with ${JSON.stringify(Light)}`
       );
       await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
-      await this.setForeignStateAsync(Light.state, true);
+      if (((_a = await this.getForeignStateAsync(Light.state)) == null ? void 0 : _a.val) !== true) {
+        await this.setForeignStateAsync(Light.state, true);
+      }
       await this.setForeignStateAsync(Light.transition, this.config.colorfulTransition);
       while (Light.stoplightby === null) {
         for (let i = 1; i < this.config.colorfulColors.length; i++) {
@@ -412,6 +418,7 @@ class Lighteffects extends utils.Adapter {
     }
   }
   async effectCandle(Light) {
+    var _a;
     function getRandomColor() {
       return "#" + ((1 << 24) + (255 << 16) + (Math.floor(Math.random() * 201) << 8) + 0).toString(16).slice(1);
     }
@@ -423,7 +430,9 @@ class Lighteffects extends utils.Adapter {
       );
       await this.setForeignStateAsync(Light.transition, 1);
       await this.setForeignStateAsync(Light.color, getRandomColor());
-      await this.setForeignStateAsync(Light.state, true);
+      if (((_a = await this.getForeignStateAsync(Light.state)) == null ? void 0 : _a.val) !== true) {
+        await this.setForeignStateAsync(Light.state, true);
+      }
       while (Light.stoplightby === null) {
         await new Promise((EffectTimeout2) => {
           return setTimeout(EffectTimeout2, Math.floor(Math.random() * (1e3 - 200 + 1) + 200) + 1e3);

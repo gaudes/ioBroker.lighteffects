@@ -471,8 +471,10 @@ class Lighteffects extends utils.Adapter {
 			await this.setForeignStateAsync(Light.transition, 0);
 			// Set color
 			await this.setForeignStateAsync(Light.color, Color);
-			// Power on
-			await this.setForeignStateAsync(Light.state, true);
+			// Power on if neccessary
+			if ((await this.getForeignStateAsync(Light.state))?.val !== true) {
+				await this.setForeignStateAsync(Light.state, true);
+			}
 			for (let i = 0; i < Pulse; i++) {
 				// Set brightness to 100%
 				await this.setForeignStateAsync(Light.brightness, BrightHigh);
@@ -509,8 +511,10 @@ class Lighteffects extends utils.Adapter {
 			);
 			// Set color to first color
 			await this.setForeignStateAsync(Light.color, this.config.colorfulColors[0].color);
-			// Power on
-			await this.setForeignStateAsync(Light.state, true);
+			// Power on if neccessary
+			if ((await this.getForeignStateAsync(Light.state))?.val !== true) {
+				await this.setForeignStateAsync(Light.state, true);
+			}
 			// Set transition time to desired value
 			await this.setForeignStateAsync(Light.transition, this.config.colorfulTransition);
 			while (Light.stoplightby === null) {
@@ -555,8 +559,10 @@ class Lighteffects extends utils.Adapter {
 			await this.setForeignStateAsync(Light.transition, 1);
 			// Set color to initial color
 			await this.setForeignStateAsync(Light.color, getRandomColor());
-			// Power on
-			await this.setForeignStateAsync(Light.state, true);
+			// Power on if neccessary
+			if ((await this.getForeignStateAsync(Light.state))?.val !== true) {
+				await this.setForeignStateAsync(Light.state, true);
+			}
 			while (Light.stoplightby === null) {
 				await new Promise((EffectTimeout) => {
 					return setTimeout(EffectTimeout, Math.floor(Math.random() * (1000 - 200 + 1) + 200) + 1000);
