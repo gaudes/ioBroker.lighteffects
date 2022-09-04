@@ -359,7 +359,7 @@ class Lighteffects extends utils.Adapter {
       await this.setForeignStateAsync(Light.transition, 0);
       await this.setForeignStateAsync(Light.color, Color);
       await this.setForeignStateAsync(Light.state, true);
-      for (let i = 1; i < Pulse; i++) {
+      for (let i = 0; i < Pulse; i++) {
         await this.setForeignStateAsync(Light.brightness, BrightHigh);
         await new Promise((f) => setTimeout(f, 1e3));
         await this.setForeignStateAsync(Light.brightness, BrightLow);

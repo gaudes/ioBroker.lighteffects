@@ -469,11 +469,11 @@ class Lighteffects extends utils.Adapter {
 			);
 			// Set transition time to 0
 			await this.setForeignStateAsync(Light.transition, 0);
-			// Set color to red
+			// Set color
 			await this.setForeignStateAsync(Light.color, Color);
 			// Power on
 			await this.setForeignStateAsync(Light.state, true);
-			for (let i = 1; i < Pulse; i++) {
+			for (let i = 0; i < Pulse; i++) {
 				// Set brightness to 100%
 				await this.setForeignStateAsync(Light.brightness, BrightHigh);
 				// Sleep 1s
