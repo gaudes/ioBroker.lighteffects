@@ -280,12 +280,11 @@ class Lighteffects extends utils.Adapter {
 		try {
 			for (const cLight of Lights) {
 				if (cLight.active === true) {
-					Lights[Lights.findIndex((obj) => obj.name == cLight.name)].active = false;
+					Lights[Lights.findIndex((obj) => obj.name == cLight.name)].stoplightby = StopLightBy.StopEffect;
 				}
 			}
 			this.setTimeout(() => {
 				this.clearTimeout(EffectTimeout);
-				//this.clearTimeout(EffectResetTimeout);
 				callback();
 			}, 1500);
 		} catch (e) {
@@ -564,9 +563,13 @@ class Lighteffects extends utils.Adapter {
 				await this.setForeignStateAsync(Light.state, true);
 			}
 			while (Light.stoplightby === null) {
-				await new Promise((EffectTimeout) => {
-					return setTimeout(EffectTimeout, Math.floor(Math.random() * (1000 - 200 + 1) + 200) + 1000);
-				});
+				if (Light.stoplightby === null) {
+					await new Promise((EffectTimeout) => {
+						return setTimeout(EffectTimeout, Math.floor(Math.random() * (1000 - 200 + 1) + 200) + 1000);
+					});
+				} else {
+					break;
+				}
 				if (Light.stoplightby === null) {
 					await this.setForeignStateAsync(Light.color, getRandomColor());
 					let CurrBright = 100;
