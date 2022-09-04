@@ -477,9 +477,15 @@ class Lighteffects extends utils.Adapter {
 				// Sleep 1s
 				await new Promise((f) => setTimeout(f, 1000));
 			}
-			const effectPrevious = Light.effectPrevious;
-			Light.effectPrevious = null;
-			await this.setStateAsync(Light.name + "." + "effect", effectPrevious);
+			// No previous effect
+			if (Light.effectPrevious === null) {
+				Light.stoplightby = StopLightBy.StopEffect;
+				this.effectStop(Light);
+			} else {
+				const effectPrevious = Light.effectPrevious;
+				Light.effectPrevious = null;
+				await this.setStateAsync(Light.name + "." + "effect", effectPrevious);
+			}
 		} catch (err) {
 			Helper.ReportingError(err as Error, MsgErrUnknown, "effectNotify");
 		}

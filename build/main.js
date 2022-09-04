@@ -359,9 +359,14 @@ class Lighteffects extends utils.Adapter {
         await this.setForeignStateAsync(Light.brightness, BrightLow);
         await new Promise((f) => setTimeout(f, 1e3));
       }
-      const effectPrevious = Light.effectPrevious;
-      Light.effectPrevious = null;
-      await this.setStateAsync(Light.name + ".effect", effectPrevious);
+      if (Light.effectPrevious === null) {
+        Light.stoplightby = 0 /* StopEffect */;
+        this.effectStop(Light);
+      } else {
+        const effectPrevious = Light.effectPrevious;
+        Light.effectPrevious = null;
+        await this.setStateAsync(Light.name + ".effect", effectPrevious);
+      }
     } catch (err) {
       Helper.ReportingError(err, MsgErrUnknown, "effectNotify");
     }
