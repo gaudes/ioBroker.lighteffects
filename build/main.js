@@ -324,14 +324,20 @@ class Lighteffects extends utils.Adapter {
         switch (Light.disabling) {
           case "Reset": {
             await this.restoreCurrentValues(Light);
+            await this.setStateAsync(Light.name + ".state", false);
+            await this.setStateAsync(Light.name + ".effect", Light.defaulteffect);
             break;
           }
           case "PowerOffRestore": {
             await this.restoreCurrentValues(Light);
             await this.setForeignStateAsync(Light.state, false);
+            await this.setStateAsync(Light.name + ".state", false);
+            await this.setStateAsync(Light.name + ".effect", Light.defaulteffect);
             break;
           }
           default: {
+            await this.setStateAsync(Light.name + ".state", false);
+            await this.setStateAsync(Light.name + ".effect", Light.defaulteffect);
             await this.setForeignStateAsync(Light.state, false);
             break;
           }
