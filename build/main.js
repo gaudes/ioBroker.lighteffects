@@ -286,7 +286,7 @@ class Lighteffects extends utils.Adapter {
     if (Light.active === true && Light.effectPrevious !== null) {
       Helper.ReportingInfo("Debug", "effectRun", `Stop current effect for ${Light.name}`);
       Light.stoplightby = 2 /* SwitchEffect */;
-      await new Promise((EffectTimeout2) => setTimeout(EffectTimeout2, 1e3));
+      await new Promise((EffectTimeout2) => setTimeout(EffectTimeout2, 1100));
       Light.stoplightby = null;
     }
     Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = true;

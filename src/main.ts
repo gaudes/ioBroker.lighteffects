@@ -374,7 +374,7 @@ class Lighteffects extends utils.Adapter {
 			// Stop current effect
 			Light.stoplightby = StopLightBy.SwitchEffect;
 			// Sleep 1000
-			await new Promise((EffectTimeout) => setTimeout(EffectTimeout, 1000));
+			await new Promise((EffectTimeout) => setTimeout(EffectTimeout, 1100));
 			Light.stoplightby = null;
 		}
 		// Set internal Light active
