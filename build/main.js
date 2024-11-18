@@ -14,6 +14,10 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
@@ -30,6 +34,7 @@ let Lights;
 const MsgErrUnknown = "Unknown Error";
 const EffectTimeout = null;
 class Lighteffects extends utils.Adapter {
+  //#region Constructor
   constructor(options = {}) {
     super({
       ...options,
@@ -39,6 +44,9 @@ class Lighteffects extends utils.Adapter {
     this.on("stateChange", this.onStateChange.bind(this));
     this.on("unload", this.onUnload.bind(this));
   }
+  //#endregion
+  //#region Base Functions of Adapter
+  //#region onReady
   async onReady() {
     Helper = new import_global_helper.GlobalHelper(this);
     let oExistingObjects = null;
@@ -218,6 +226,8 @@ class Lighteffects extends utils.Adapter {
       }
     }
   }
+  //#endregion
+  //#region onUnload
   onUnload(callback) {
     try {
       for (const cLight of Lights) {
@@ -233,6 +243,8 @@ class Lighteffects extends utils.Adapter {
       callback();
     }
   }
+  //#endregion
+  //#region onStateChange
   onStateChange(id, state) {
     try {
       if (state) {
@@ -277,6 +289,10 @@ class Lighteffects extends utils.Adapter {
       Helper.ReportingError(err, MsgErrUnknown, "onStateChange");
     }
   }
+  //#endregion
+  //#endregion
+  //#region Effect Functions
+  //#region Base Effect Function
   async effectRun(Light) {
     Helper.ReportingInfo("Debug", "effectRun", `Run effect for ${Light.name} with ${JSON.stringify(Light)}`);
     if (Light.effectPrevious === null) {
@@ -349,6 +365,8 @@ class Lighteffects extends utils.Adapter {
     Lights[Lights.findIndex((obj) => obj.name === Light.name)].stoplightby = null;
     Lights[Lights.findIndex((obj) => obj.name === Light.name)].active = false;
   }
+  //#region Effect Notify
+  // Simple effect: Set color, switch brightness from 1 to 100 three times, handle poweroff behaviour
   async effectNotify(Light, Color, BrightLow, BrightHigh, Pulse) {
     var _a;
     try {
@@ -380,6 +398,9 @@ class Lighteffects extends utils.Adapter {
       Helper.ReportingError(err, MsgErrUnknown, "effectNotify");
     }
   }
+  //#endregion
+  //#region Effect Color
+  // Effect: Set color as defined in an infinit loop, handle poweroff behaviour
   async effectColor(Light) {
     var _a;
     try {
@@ -417,6 +438,9 @@ class Lighteffects extends utils.Adapter {
       Helper.ReportingError(err, MsgErrUnknown, "effectColor");
     }
   }
+  //#endregion
+  //#region Effect Candle
+  // Effect: Set candle colors as defined in an infinit loop, handle poweroff behaviour
   async effectCandle(Light) {
     var _a;
     function getRandomColor() {
@@ -460,6 +484,9 @@ class Lighteffects extends utils.Adapter {
       Helper.ReportingError(err, MsgErrUnknown, "effectCandle");
     }
   }
+  //#endregion
+  //#region saveCurrentValues
+  // Save current settings of light
   async saveCurrentValues(Light) {
     try {
       Helper.ReportingInfo("Debug", "saveCurrentValues", `Save current values for ${Light.name}`);
@@ -504,6 +531,9 @@ class Lighteffects extends utils.Adapter {
       Helper.ReportingError(err, MsgErrUnknown, "saveCurrentValues");
     }
   }
+  //#endregion
+  //#region restoreCurrentValues
+  // Save current settings of light
   async restoreCurrentValues(Light) {
     try {
       Helper.ReportingInfo(
@@ -523,6 +553,8 @@ class Lighteffects extends utils.Adapter {
       Helper.ReportingError(err, MsgErrUnknown, "restoreCurrentValues");
     }
   }
+  //#endregion
+  //#endregion
 }
 if (require.main !== module) {
   module.exports = (options) => new Lighteffects(options);

@@ -31,6 +31,16 @@ class GlobalHelper {
       }
     }
   }
+  //#region Helper Function ReportingError
+  /**
+   * Function for global error reporting
+   * @param {Object} Err Error-Object
+   * @param {string} FriendlyError Error message for user
+   * @param {string} NameFunction Name of the function where error occured
+   * @param {string} NameAction Name of the subfunction where error occured
+   * @param {string} Info Contextual information
+   * @param {boolean} ReportSentry Report error to sentry, default true
+   */
   async ReportingError(Err, FriendlyError, NameFunction, NameAction = "", Info = "", ReportSentry = true) {
     try {
       let sErrMsg = `Error occured: ${FriendlyError} in ${NameFunction}`;
@@ -60,6 +70,15 @@ class GlobalHelper {
       this.Adapter.log.error(`Exception in ErrorReporting Sentry [${e}]`);
     }
   }
+  //#endregion
+  //#region Helper Function ReportingInfo
+  /**
+   * Function for global information reporting
+   * @param {"Info"|"Debug"|"Warn"} Level Level for ioBroker Logging
+   * @param {string} Category Category of information
+   * @param {string} Message Message
+   * @param {{[Key: string]: any}|undefined} Data Contextual data information
+   */
   ReportingInfo(Level, Category, Message, Data) {
     var _a;
     let iobMessage = Message;
@@ -84,6 +103,7 @@ class GlobalHelper {
       data: Data
     });
   }
+  //#endregion
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
