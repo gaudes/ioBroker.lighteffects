@@ -22,6 +22,8 @@ __export(global_helper_exports, {
 });
 module.exports = __toCommonJS(global_helper_exports);
 class GlobalHelper {
+  Adapter;
+  Sentry;
   constructor(adapterInstance) {
     this.Adapter = adapterInstance;
     if (this.Adapter.supportsFeature && this.Adapter.supportsFeature("PLUGINS")) {
@@ -99,7 +101,7 @@ class GlobalHelper {
     (_a = this.Sentry) == null ? void 0 : _a.addBreadcrumb({
       category: Category,
       message: Message,
-      level: Level,
+      //level: Level as SentryObj.Severity,
       data: Data
     });
   }
