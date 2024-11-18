@@ -58,7 +58,7 @@ For color effect you can customize the used colors, the transition time and the 
 
 MIT License
 
-Copyright (c) 2022 Gaudes <ralf@gaudes.net>
+Copyright (c) 2024 Gaudes <ralf@gaudes.net>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
