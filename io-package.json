@@ -1,164 +1,185 @@
 {
-	"common": {
-		"name": "lighteffects",
-		"version": "0.0.1",
-		"news": {
-			"0.0.1": {
-				"en": "initial release",
-				"de": "Erstveröffentlichung",
-				"ru": "Начальная версия",
-				"pt": "lançamento inicial",
-				"nl": "Eerste uitgave",
-				"fr": "Première version",
-				"it": "Versione iniziale",
-				"es": "Versión inicial",
-				"pl": "Pierwsze wydanie",
-				"zh-cn": "首次出版",
-				"uk": "початковий випуск"
-			}
-		},
-		"titleLang": {
-			"en": "Light Effects",
-			"de": "Lichteffekte",
-			"ru": "Световые эффекты",
-			"pt": "Efeitos de luz",
-			"nl": "Light Effects",
-			"fr": "Effets lumineux",
-			"it": "Effetti leggeri",
-			"es": "Efectos de luz",
-			"pl": "Efekty świetlne",
-			"zh-cn": "B. 净影响",
-			"uk": "світлові ефекти"
-		},
-		"desc": {
-			"en": "Light Effects for existing lights (e.g. ZigBee)",
-			"de": "Lichteffekte für vorhandene Lichter (z.B. ZigBee)",
-			"ru": "Световые эффекты для существующих огней (например, ZigBee)",
-			"pt": "Efeitos de luz para luzes existentes (por exemplo ZigBee)",
-			"nl": "Lichte effecten voor bestaande lichten",
-			"fr": "Effets lumineux pour les feux existants (p. ex. ZigBee)",
-			"it": "Effetti di luce per le luci esistenti (ad esempio ZigBee)",
-			"es": "Efectos de luz para las luces existentes (por ejemplo ZigBee)",
-			"pl": "Efekty świetlne istniejących światła (np. ZigBee)",
-			"zh-cn": "现有照明的影响(例如ZigBee)",
-			"uk": "Світлові ефекти для існуючих світильників (наприклад, ZigBee)"
-		},
-		"authors": ["Gaudes <ralf@gaudes.net>"],
-		"keywords": ["light", "effect"],
-		"adminUI": {
-			"config": "json"
-		},
-		"licenseInformation": {
-			"type": "free",
-			"license": "MIT"
-		},
-		"platform": "Javascript/Node.js",
-		"main": "build/main.js",
-		"icon": "lighteffects.png",
-		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/gaudes/ioBroker.lighteffects/main/admin/lighteffects.png",
-		"readme": "https://github.com/gaudes/ioBroker.lighteffects/blob/main/README.md",
-		"loglevel": "info",
-		"tier": 3,
-		"mode": "daemon",
-		"type": "lighting",
-		"compact": true,
-		"connectionType": "local",
-		"dataSource": "push",
-		"materialize": true,
-		"materializeTab": true,
-		"adminTab": {
-			"singleton": true,
-			"name": {
-				"en": "Light Effects",
-				"de": "Light Effects",
-				"ru": "Light Effects",
-				"pt": "Light Effects",
-				"nl": "Light Effects",
-				"fr": "Light Effects",
-				"it": "Light Effects",
-				"es": "Light Effects",
-				"pl": "Light Effects",
-				"zh-cn": "Light Effects"
-			},
-			"link": "",
-			"fa-icon": "info"
-		},
-		"dependencies": [
-			{
-				"js-controller": ">=5.0.19"
-			}
-		],
-		"globalDependencies": [
-			{
-				"admin": ">=5.0.0"
-			}
-		],
-		"plugins": {
-			"sentry": {
-				"dsn": "https://0832d5a217aa4dfc95151afe565c835e@sentry.iobroker.net/9999",
-				"errorBlacklist": ["SyntaxError", "HANDLED"]
-			}
-		}
-	},
-	"native": {
-		"lights": [
-			{
-				"enabled": true,
-				"name": "",
-				"state": "",
-				"brightness": "",
-				"color": "",
-				"colortemp": "",
-				"transition": "",
-				"effect": "",
-				"disabling": ""
-			}
-		],
-		"sentry_disable": true,
-		"notification": [
-			{
-				"type": "Info",
-				"typeInternal": "notifyInfo",
-				"color": "#0000FF",
-				"brightLow": 1,
-				"brightHigh": 100,
-				"pulse": 3
-			},
-			{
-				"type": "Warning",
-				"typeInternal": "notifyWarn",
-				"color": "#ffa500",
-				"brightLow": 1,
-				"brightHigh": 100,
-				"pulse": 3
-			},
-			{
-				"type": "Alarm",
-				"typeInternal": "notifyAlarm",
-				"color": "#ff0000",
-				"brightLow": 1,
-				"brightHigh": 100,
-				"pulse": 3
-			}
-		],
-		"colorfulColors": [
-			{
-				"color": "#ffff00"
-			},
-			{
-				"color": "#ff0000"
-			},
-			{
-				"color": "#008000"
-			},
-			{
-				"color": "#0000ff"
-			}
-		],
-		"colorfulTransition": 10,
-		"colorfulDuration": 30
-	},
-	"objects": [],
-	"instanceObjects": []
+  "common": {
+    "name": "lighteffects",
+    "version": "0.1.0",
+    "news": {
+      "0.1.0": {
+        "en": "initial release",
+        "de": "erstausstrahlung",
+        "ru": "первоначальный выпуск",
+        "pt": "lançamento inicial",
+        "nl": "eerste release",
+        "fr": "libération initiale",
+        "it": "rilascio iniziale",
+        "es": "liberación inicial",
+        "pl": "początkowe zwolnienie",
+        "uk": "початковий реліз",
+        "zh-cn": "初步释放"
+      },
+      "0.0.1": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "zh-cn": "首次出版",
+        "uk": "початковий випуск"
+      }
+    },
+    "titleLang": {
+      "en": "Light Effects",
+      "de": "Lichteffekte",
+      "ru": "Световые эффекты",
+      "pt": "Efeitos de luz",
+      "nl": "Light Effects",
+      "fr": "Effets lumineux",
+      "it": "Effetti leggeri",
+      "es": "Efectos de luz",
+      "pl": "Efekty świetlne",
+      "zh-cn": "B. 净影响",
+      "uk": "світлові ефекти"
+    },
+    "desc": {
+      "en": "Light Effects for existing lights (e.g. ZigBee)",
+      "de": "Lichteffekte für vorhandene Lichter (z.B. ZigBee)",
+      "ru": "Световые эффекты для существующих огней (например, ZigBee)",
+      "pt": "Efeitos de luz para luzes existentes (por exemplo ZigBee)",
+      "nl": "Lichte effecten voor bestaande lichten",
+      "fr": "Effets lumineux pour les feux existants (p. ex. ZigBee)",
+      "it": "Effetti di luce per le luci esistenti (ad esempio ZigBee)",
+      "es": "Efectos de luz para las luces existentes (por ejemplo ZigBee)",
+      "pl": "Efekty świetlne istniejących światła (np. ZigBee)",
+      "zh-cn": "现有照明的影响(例如ZigBee)",
+      "uk": "Світлові ефекти для існуючих світильників (наприклад, ZigBee)"
+    },
+    "authors": [
+      "Gaudes <ralf@gaudes.net>"
+    ],
+    "keywords": [
+      "light",
+      "effect"
+    ],
+    "adminUI": {
+      "config": "json"
+    },
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
+    "platform": "Javascript/Node.js",
+    "main": "build/main.js",
+    "icon": "lighteffects.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/gaudes/ioBroker.lighteffects/main/admin/lighteffects.png",
+    "readme": "https://github.com/gaudes/ioBroker.lighteffects/blob/main/README.md",
+    "loglevel": "info",
+    "tier": 3,
+    "mode": "daemon",
+    "type": "lighting",
+    "compact": true,
+    "connectionType": "local",
+    "dataSource": "push",
+    "materialize": true,
+    "materializeTab": true,
+    "adminTab": {
+      "singleton": true,
+      "name": {
+        "en": "Light Effects",
+        "de": "Light Effects",
+        "ru": "Light Effects",
+        "pt": "Light Effects",
+        "nl": "Light Effects",
+        "fr": "Light Effects",
+        "it": "Light Effects",
+        "es": "Light Effects",
+        "pl": "Light Effects",
+        "zh-cn": "Light Effects"
+      },
+      "link": "",
+      "fa-icon": "info"
+    },
+    "dependencies": [
+      {
+        "js-controller": ">=5.0.19"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=5.0.0"
+      }
+    ],
+    "plugins": {
+      "sentry": {
+        "dsn": "https://0832d5a217aa4dfc95151afe565c835e@sentry.iobroker.net/9999",
+        "errorBlacklist": [
+          "SyntaxError",
+          "HANDLED"
+        ]
+      }
+    }
+  },
+  "native": {
+    "lights": [
+      {
+        "enabled": true,
+        "name": "",
+        "state": "",
+        "brightness": "",
+        "color": "",
+        "colortemp": "",
+        "transition": "",
+        "effect": "",
+        "disabling": ""
+      }
+    ],
+    "sentry_disable": true,
+    "notification": [
+      {
+        "type": "Info",
+        "typeInternal": "notifyInfo",
+        "color": "#0000FF",
+        "brightLow": 1,
+        "brightHigh": 100,
+        "pulse": 3
+      },
+      {
+        "type": "Warning",
+        "typeInternal": "notifyWarn",
+        "color": "#ffa500",
+        "brightLow": 1,
+        "brightHigh": 100,
+        "pulse": 3
+      },
+      {
+        "type": "Alarm",
+        "typeInternal": "notifyAlarm",
+        "color": "#ff0000",
+        "brightLow": 1,
+        "brightHigh": 100,
+        "pulse": 3
+      }
+    ],
+    "colorfulColors": [
+      {
+        "color": "#ffff00"
+      },
+      {
+        "color": "#ff0000"
+      },
+      {
+        "color": "#008000"
+      },
+      {
+        "color": "#0000ff"
+      }
+    ],
+    "colorfulTransition": 10,
+    "colorfulDuration": 30
+  },
+  "objects": [],
+  "instanceObjects": []
 }

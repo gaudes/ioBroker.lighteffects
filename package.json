@@ -1,6 +1,6 @@
 {
   "name": "iobroker.lighteffects",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Light Effects",
   "author": {
     "name": "gaudes",
@@ -16,7 +16,7 @@
     "type": "git",
     "url": "https://github.com/gaudes/ioBroker.lighteffects"
   },
-  "engines":{
+  "engines": {
     "node": ">=18"
   },
   "dependencies": {
