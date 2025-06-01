@@ -52,7 +52,7 @@
     "ts-node": "^10.9.2",
     "typescript": "~5.6.3",
     "prettier": "^3.3.3",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.2.1"
   },
   "main": "build/main.js",
